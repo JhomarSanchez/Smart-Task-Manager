@@ -1,0 +1,11 @@
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Domain\bin\Debug\net10.0\SmartTask.Domain.deps.json
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Domain\bin\Debug\net10.0\SmartTask.Domain.dll
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Domain\bin\Debug\net10.0\SmartTask.Domain.pdb
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Domain\obj\Debug\net10.0\SmartTask.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Domain\obj\Debug\net10.0\SmartTask.Domain.AssemblyInfoInputs.cache
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Domain\obj\Debug\net10.0\SmartTask.Domain.AssemblyInfo.cs
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Domain\obj\Debug\net10.0\SmartTask.Domain.csproj.CoreCompileInputs.cache
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Domain\obj\Debug\net10.0\SmartTask.Domain.dll
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Domain\obj\Debug\net10.0\refint\SmartTask.Domain.dll
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Domain\obj\Debug\net10.0\SmartTask.Domain.pdb
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Domain\obj\Debug\net10.0\ref\SmartTask.Domain.dll

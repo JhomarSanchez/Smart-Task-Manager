@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Backend/">
+    <Project Path="src/Backend/SmartTask.Api/SmartTask.Api.csproj" />
+    <Project Path="src/Backend/SmartTask.Application/SmartTask.Application.csproj" />
+    <Project Path="src/Backend/SmartTask.Domain/SmartTask.Domain.csproj" />
+    <Project Path="src/Backend/SmartTask.Infrastructure/SmartTask.Infrastructure.csproj" />
+  </Folder>
+</Solution>

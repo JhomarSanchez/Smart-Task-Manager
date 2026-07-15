@@ -1,0 +1,15 @@
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Application\bin\Debug\net10.0\SmartTask.Application.deps.json
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Application\bin\Debug\net10.0\SmartTask.Application.dll
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Application\bin\Debug\net10.0\SmartTask.Application.pdb
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Application\bin\Debug\net10.0\SmartTask.Domain.dll
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Application\bin\Debug\net10.0\SmartTask.Domain.pdb
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Application\obj\Debug\net10.0\SmartTask.Application.csproj.AssemblyReference.cache
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Application\obj\Debug\net10.0\SmartTask.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Application\obj\Debug\net10.0\SmartTask.Application.AssemblyInfoInputs.cache
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Application\obj\Debug\net10.0\SmartTask.Application.AssemblyInfo.cs
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Application\obj\Debug\net10.0\SmartTask.Application.csproj.CoreCompileInputs.cache
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Application\obj\Debug\net10.0\SmartTas.57C526BF.Up2Date
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Application\obj\Debug\net10.0\SmartTask.Application.dll
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Application\obj\Debug\net10.0\refint\SmartTask.Application.dll
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Application\obj\Debug\net10.0\SmartTask.Application.pdb
+C:\Users\jhoma\OneDrive\Documentos\Programacion\Creacion\smart task\task\src\Backend\SmartTask.Application\obj\Debug\net10.0\ref\SmartTask.Application.dll
