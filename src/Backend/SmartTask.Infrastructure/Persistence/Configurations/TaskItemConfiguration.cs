@@ -30,8 +30,9 @@ public class TaskItemConfiguration : IEntityTypeConfiguration<TaskItem>
 
         builder.Property(t => t.DueDate);
 
+        // Category supports board:column naming format (up to 100 chars)
         builder.Property(t => t.Category)
-            .HasMaxLength(50);
+            .HasMaxLength(100);
 
         // Map enum to integer in PostgreSQL
         builder.Property(t => t.Priority)

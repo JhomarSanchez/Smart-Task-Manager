@@ -20,8 +20,9 @@ public class CreateTaskValidator : AbstractValidator<CreateTaskDto>
             .Must(dueDate => !dueDate.HasValue || dueDate.Value > DateTimeOffset.UtcNow)
             .WithMessage("Due date must be in the future.");
 
+        // Category can contain board:column format (up to 100 chars)
         RuleFor(x => x.Category)
-            .MaximumLength(50).WithMessage("Category must not exceed 50 characters.");
+            .MaximumLength(100).WithMessage("Category must not exceed 100 characters.");
 
         RuleFor(x => x.Priority)
             .Must(p => string.Equals(p, "Low", StringComparison.OrdinalIgnoreCase) ||

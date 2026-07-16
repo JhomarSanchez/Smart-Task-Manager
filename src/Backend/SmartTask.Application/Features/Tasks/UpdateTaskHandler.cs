@@ -32,7 +32,14 @@ public class UpdateTaskHandler
             priority = TaskPriority.Medium;
         }
 
-        if (!Enum.TryParse<TaskStatus>(dto.Status, true, out var status))
+        // Normalize "Doing" (frontend alias) to "InProgress" (domain enum value)
+        var normalizedStatus = dto.Status?.Trim();
+        if (string.Equals(normalizedStatus, "Doing", StringComparison.OrdinalIgnoreCase))
+        {
+            normalizedStatus = "InProgress";
+        }
+
+        if (!Enum.TryParse<TaskStatus>(normalizedStatus, true, out var status))
         {
             status = TaskStatus.Todo;
         }
