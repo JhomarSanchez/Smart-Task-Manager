@@ -298,16 +298,3 @@ Edita `src/Backend/SmartTask.Api/appsettings.Development.json`:
                              └────────────────────────┘
 ```
 
----
-
-## 📜 Licencia
-
-Este proyecto está bajo la licencia **MIT**. Úsalo, modifícalo y compártelo libremente.
-
----
-
-<div align="center">
-
-Hecho con ♥ · Angular 22 · .NET 10 · PostgreSQL · Gemini AI
-
-</div>
