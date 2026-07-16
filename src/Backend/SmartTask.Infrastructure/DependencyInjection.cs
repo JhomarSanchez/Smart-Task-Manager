@@ -43,15 +43,8 @@ public static class DependencyInjection
         };
         
         services.AddSingleton(aiSettings);
-
-        if (string.Equals(aiSettings.Provider, "OpenAI", StringComparison.OrdinalIgnoreCase))
-        {
-            services.AddScoped<ISmartParserService, OpenAiParserService>();
-        }
-        else
-        {
-            services.AddScoped<ISmartParserService, GeminiParserService>();
-        }
+        services.AddHttpContextAccessor();
+        services.AddScoped<ISmartParserService, DynamicSmartParserService>();
 
         return services;
     }

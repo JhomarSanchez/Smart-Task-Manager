@@ -304,7 +304,7 @@ public class ParserServiceTests
 
         // Assert
         parserService.Should().NotBeNull();
-        parserService.Should().BeOfType<GeminiParserService>();
+        parserService.Should().BeOfType<DynamicSmartParserService>();
     }
 
     [Theory]

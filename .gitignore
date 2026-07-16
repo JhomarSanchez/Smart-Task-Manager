@@ -38,6 +38,12 @@ bld/
 *.csproj.user
 *.usersettings
 secrets.json
+.env
+.env.*
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
 
 # Evitar subir archivos temporales de publicación o restauración
 project.lock.json

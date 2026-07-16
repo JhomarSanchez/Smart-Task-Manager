@@ -1,3 +1,42 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-primary: var(--primary);
+  --color-accent: var(--accent);
+}
+
+:root {
+  --background: hsl(0, 0%, 100%);
+  --foreground: hsl(0, 0%, 7%);
+  --card: hsl(0, 0%, 98%);
+  --card-foreground: hsl(0, 0%, 7%);
+  --border: hsl(240, 5.9%, 90%);
+  --primary: hsl(221.2, 83.2%, 53.3%);
+  --accent: hsl(342.7, 91.8%, 47.8%);
+}
+
+.dark {
+  --background: hsl(0, 0%, 0%);
+  --foreground: hsl(240, 5.9%, 90%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(240, 5.9%, 90%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(217.2, 91.2%, 59.8%);
+  --accent: hsl(350.5, 89.1%, 60.2%);
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  margin: 0;
+  padding: 0;
+}
