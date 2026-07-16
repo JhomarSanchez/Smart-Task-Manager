@@ -112,7 +112,7 @@ export class TaskService {
   /**
    * Reorders a task (optimistic update with fallback).
    */
-  async reorderTask(id: string, newStatus: string, newPosition: number): Promise<void> {
+  async reorderTask(id: string, newStatus: string, newPosition: number, newCategory?: string): Promise<void> {
     const originalTasks = [...this.tasks()];
     
     // Find task and update local state immediately (Optimistic Update)
@@ -120,6 +120,7 @@ export class TaskService {
     if (taskIndex === -1) return;
 
     const task = originalTasks[taskIndex];
+    const targetCategory = newCategory !== undefined ? newCategory : task.category;
     
     // Create the payload matching UpdateTaskDto
     const updateDto: UpdateTaskDto = {
@@ -127,14 +128,14 @@ export class TaskService {
       description: task.description,
       dueDate: task.dueDate,
       priority: task.priority,
-      category: task.category,
+      category: targetCategory,
       status: newStatus,
       boardPosition: newPosition
     };
 
     // Update signal state immediately
     this.tasks.update(current => 
-      current.map(t => t.id === id ? { ...t, status: newStatus, boardPosition: newPosition, updatedAt: new Date().toISOString() } : t)
+      current.map(t => t.id === id ? { ...t, status: newStatus, boardPosition: newPosition, category: targetCategory, updatedAt: new Date().toISOString() } : t)
     );
 
     try {
@@ -175,6 +176,32 @@ export class TaskService {
   saveAiSettings(settings: { enabled: boolean; provider: string; apiKey: string; modelName: string }) {
     if (typeof window !== 'undefined' && window.localStorage) {
       window.localStorage.setItem('smarttask_ai_settings', JSON.stringify(settings));
+    }
+  }
+
+  /**
+   * Retrieves user-created boards (categories with no tasks yet) from localStorage.
+   */
+  getLocalBoards(): string[] {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const saved = window.localStorage.getItem('smarttask_local_boards');
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch (e) {
+          // ignore fallback to default
+        }
+      }
+    }
+    return [];
+  }
+
+  /**
+   * Persists user-created boards to localStorage.
+   */
+  saveLocalBoards(boards: string[]): void {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      window.localStorage.setItem('smarttask_local_boards', JSON.stringify(boards));
     }
   }
 

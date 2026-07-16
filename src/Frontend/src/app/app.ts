@@ -4,12 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { TaskService } from './core/services/task.service';
 import { TaskItem, CreateTaskDto, UpdateTaskDto } from './core/models/task.model';
-import { TaskCardComponent } from './shared/task-card/task-card';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, DragDropModule, TaskCardComponent],
+  imports: [CommonModule, FormsModule, DragDropModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -26,6 +25,7 @@ export class App implements OnInit {
 
   // Dropdown states
   readonly showBoardDropdown = signal<boolean>(false);
+  readonly activeCardMenuId = signal<string | null>(null);
 
   // Boards (Categories) State
   readonly activeBoard = signal<string>('General');
@@ -35,7 +35,8 @@ export class App implements OnInit {
     // Collect all categories from tasks
     this.taskService.tasks().forEach(t => {
       if (t.category?.trim()) {
-        cats.add(t.category.trim());
+        const boardName = t.category.split(':')[0].trim();
+        if (boardName) cats.add(boardName);
       }
     });
     // Add locally created boards
@@ -44,24 +45,33 @@ export class App implements OnInit {
     return Array.from(cats).sort();
   });
 
-  // Filtered Kanban tasks for the active board/category
-  readonly todoTasks = computed(() => 
-    this.taskService.todoTasks().filter(t => 
-      (t.category || 'General').toLowerCase() === this.activeBoard().toLowerCase()
-    )
-  );
+  // Dynamic Column State (columns are To Do, Doing, Done by default, plus custom ones)
+  readonly localColumns = signal<{ [board: string]: string[] }>({});
+  
+  readonly columnsForActiveBoard = computed(() => {
+    const board = this.activeBoard();
+    const cols = new Set<string>(['To Do', 'Doing', 'Done']);
+    
+    // Scan existing tasks for categories encoding custom columns (format -> BoardName:ColumnName)
+    this.taskService.tasks().forEach(t => {
+      const cat = t.category || 'General';
+      const parts = cat.split(':');
+      if (parts[0].toLowerCase() === board.toLowerCase() && parts[1]?.trim()) {
+        cols.add(parts[1].trim());
+      }
+    });
+    
+    // Add locally created columns for this board
+    const local = this.localColumns()[board] || [];
+    local.forEach(c => cols.add(c));
+    
+    return Array.from(cols);
+  });
 
-  readonly doingTasks = computed(() => 
-    this.taskService.doingTasks().filter(t => 
-      (t.category || 'General').toLowerCase() === this.activeBoard().toLowerCase()
-    )
-  );
-
-  readonly doneTasks = computed(() => 
-    this.taskService.doneTasks().filter(t => 
-      (t.category || 'General').toLowerCase() === this.activeBoard().toLowerCase()
-    )
-  );
+  // Filtered Kanban tasks for the active board/category (compatibility signals)
+  readonly todoTasks = computed(() => this.getTasksForColumn('To Do'));
+  readonly doingTasks = computed(() => this.getTasksForColumn('Doing'));
+  readonly doneTasks = computed(() => this.getTasksForColumn('Done'));
 
   // Form values (Task Create/Edit)
   readonly modalTitle = signal<string>('');
@@ -108,11 +118,21 @@ export class App implements OnInit {
   @HostListener('document:click')
   closeDropdowns(): void {
     this.showBoardDropdown.set(false);
+    this.activeCardMenuId.set(null);
   }
 
   toggleBoardDropdown(event: Event): void {
     event.stopPropagation();
     this.showBoardDropdown.set(!this.showBoardDropdown());
+  }
+
+  toggleCardMenu(id: string, event: Event): void {
+    event.stopPropagation();
+    if (this.activeCardMenuId() === id) {
+      this.activeCardMenuId.set(null);
+    } else {
+      this.activeCardMenuId.set(id);
+    }
   }
 
   // Board management
@@ -130,6 +150,94 @@ export class App implements OnInit {
   selectBoard(board: string): void {
     this.activeBoard.set(board);
     this.showBoardDropdown.set(false);
+  }
+
+  // Column management
+  createNewColumn(): void {
+    const name = prompt('Escribe el nombre de la nueva columna:');
+    if (name && name.trim()) {
+      const trimmed = name.trim();
+      const currentCols = this.columnsForActiveBoard();
+      
+      if (currentCols.some(c => c.toLowerCase() === trimmed.toLowerCase())) {
+        alert('Esa columna ya existe en este tablero.');
+        return;
+      }
+      
+      const board = this.activeBoard();
+      this.localColumns.update(curr => {
+        const list = curr[board] || [];
+        return {
+          ...curr,
+          [board]: [...list, trimmed]
+        };
+      });
+    }
+  }
+
+  deleteColumn(columnName: string): void {
+    if (['To Do', 'Doing', 'Done'].includes(columnName)) return;
+
+    if (confirm(`¿Estás seguro de eliminar la columna "${columnName}"? Las tareas asociadas se moverán a la columna "To Do".`)) {
+      const board = this.activeBoard();
+      const tasksInCol = this.getTasksForColumn(columnName);
+
+      // Move orphaned tasks back to 'Todo' status and active board category
+      tasksInCol.forEach(async (t) => {
+        const dto: UpdateTaskDto = {
+          title: t.title,
+          description: t.description,
+          dueDate: t.dueDate,
+          priority: t.priority,
+          category: board, 
+          status: 'Todo',
+          boardPosition: t.boardPosition
+        };
+        try {
+          await this.taskService.updateTask(t.id, dto);
+        } catch (err) {
+          console.error('Error shifting task column:', err);
+        }
+      });
+
+      // Remove from local columns signals list
+      this.localColumns.update(curr => {
+        const list = curr[board] || [];
+        return {
+          ...curr,
+          [board]: list.filter(c => c !== columnName)
+        };
+      });
+    }
+  }
+
+  // Dynamic Column Filter helper
+  getTasksForColumn(columnName: string): TaskItem[] {
+    const board = this.activeBoard();
+    return this.taskService.tasks()
+      .filter(t => {
+        const cat = t.category || 'General';
+        const parts = cat.split(':');
+        const taskBoard = parts[0].trim();
+        const taskCol = parts[1]?.trim() || this.getDefaultColumnForStatus(t.status);
+        
+        return taskBoard.toLowerCase() === board.toLowerCase() && 
+               taskCol.toLowerCase() === columnName.toLowerCase();
+      })
+      .sort((a, b) => a.boardPosition - b.boardPosition);
+  }
+
+  private getDefaultColumnForStatus(status: string): string {
+    const s = status ? status.toLowerCase() : 'todo';
+    if (s === 'todo') return 'To Do';
+    if (s === 'doing' || s === 'inprogress') return 'Doing';
+    return 'Done';
+  }
+
+  getConnectedLists(excludeColumn: string): string[] {
+    return this.columnsForActiveBoard()
+      .filter(c => c !== excludeColumn)
+      .map(c => c + 'List');
   }
 
   // AI settings modal helpers
@@ -157,13 +265,21 @@ export class App implements OnInit {
   }
 
   // Task creation/edition modal helpers
-  openCreateModal(initialTitle: string = ''): void {
+  openCreateModal(initialTitle: string = '', columnName: string = 'To Do'): void {
     this.editingTask.set(null);
     this.modalTitle.set(initialTitle);
     this.modalDescription.set('');
     this.modalDueDate.set('');
     this.modalPriority.set('Medium');
-    this.modalCategory.set(this.activeBoard()); // Automatically pre-fill with active category/board
+    
+    // Build category matching the selected board and column
+    const board = this.activeBoard();
+    if (['To Do', 'Doing', 'Done'].includes(columnName)) {
+      this.modalCategory.set(board);
+    } else {
+      this.modalCategory.set(`${board}:${columnName}`);
+    }
+
     this.formErrors.set({});
     this.showModal.set(true);
   }
@@ -202,6 +318,19 @@ export class App implements OnInit {
       const task = this.editingTask();
       const targetCategory = this.modalCategory().trim() || 'General';
       
+      // Determine status based on the custom category column name
+      let targetStatus = 'Todo';
+      const parts = targetCategory.split(':');
+      const colName = parts[1]?.trim() || '';
+      if (colName) {
+        if (colName.toLowerCase() === 'doing') targetStatus = 'Doing';
+        else if (colName.toLowerCase() === 'done') targetStatus = 'Done';
+        else if (colName.toLowerCase() === 'to do') targetStatus = 'Todo';
+        else targetStatus = 'Doing'; // custom columns default to Doing in DB
+      } else {
+        targetStatus = 'Todo';
+      }
+
       if (task) {
         const dto: UpdateTaskDto = {
           title: titleVal,
@@ -209,7 +338,7 @@ export class App implements OnInit {
           dueDate: dueDateVal,
           priority: this.modalPriority(),
           category: targetCategory,
-          status: task.status,
+          status: targetStatus,
           boardPosition: task.boardPosition
         };
         await this.taskService.updateTask(task.id, dto);
@@ -223,7 +352,8 @@ export class App implements OnInit {
         };
         const created = await this.taskService.createTask(dto);
         if (created && created.category) {
-          this.activeBoard.set(created.category);
+          const mainBoard = created.category.split(':')[0];
+          this.activeBoard.set(mainBoard);
         }
       }
       this.showModal.set(false);
@@ -263,7 +393,8 @@ export class App implements OnInit {
         };
         const created = await this.taskService.createTask(dto);
         if (created && created.category) {
-          this.activeBoard.set(created.category);
+          const mainBoard = created.category.split(':')[0];
+          this.activeBoard.set(mainBoard);
         }
         this.rawInput.set('');
       } else {
@@ -277,7 +408,7 @@ export class App implements OnInit {
     }
   }
 
-  onCardDropped(event: CdkDragDrop<TaskItem[]>, targetStatus: string): void {
+  onCardDropped(event: CdkDragDrop<TaskItem[]>, targetColumnName: string): void {
     const id = event.item.data.id;
     const isSameContainer = event.previousContainer === event.container;
     
@@ -292,7 +423,25 @@ export class App implements OnInit {
     }
 
     const newPosition = this.calculatePosition(targetListCopy, event.currentIndex);
-    this.taskService.reorderTask(id, targetStatus, newPosition);
+
+    // Determine backend status and updated category
+    let newStatus = 'Todo';
+    if (targetColumnName === 'To Do') {
+      newStatus = 'Todo';
+    } else if (targetColumnName === 'Doing') {
+      newStatus = 'Doing';
+    } else if (targetColumnName === 'Done') {
+      newStatus = 'Done';
+    } else {
+      newStatus = 'Doing'; // Custom columns map to Doing status
+    }
+
+    const board = this.activeBoard();
+    const newCategory = ['To Do', 'Doing', 'Done'].includes(targetColumnName) 
+      ? board 
+      : `${board}:${targetColumnName}`;
+
+    this.taskService.reorderTask(id, newStatus, newPosition, newCategory);
   }
 
   private calculatePosition(list: TaskItem[], index: number): number {
