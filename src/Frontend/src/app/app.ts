@@ -4,11 +4,12 @@ import { FormsModule } from '@angular/forms';
 import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { TaskService } from './core/services/task.service';
 import { TaskItem, CreateTaskDto, UpdateTaskDto } from './core/models/task.model';
+import { TaskCardComponent } from './shared/task-card/task-card';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, DragDropModule],
+  imports: [CommonModule, FormsModule, DragDropModule, TaskCardComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -25,7 +26,6 @@ export class App implements OnInit {
 
   // Dropdown states
   readonly showBoardDropdown = signal<boolean>(false);
-  readonly activeCardMenuId = signal<string | null>(null);
 
   // Boards (Categories) State
   readonly activeBoard = signal<string>('General');
@@ -108,21 +108,11 @@ export class App implements OnInit {
   @HostListener('document:click')
   closeDropdowns(): void {
     this.showBoardDropdown.set(false);
-    this.activeCardMenuId.set(null);
   }
 
   toggleBoardDropdown(event: Event): void {
     event.stopPropagation();
     this.showBoardDropdown.set(!this.showBoardDropdown());
-  }
-
-  toggleCardMenu(id: string, event: Event): void {
-    event.stopPropagation();
-    if (this.activeCardMenuId() === id) {
-      this.activeCardMenuId.set(null);
-    } else {
-      this.activeCardMenuId.set(id);
-    }
   }
 
   // Board management

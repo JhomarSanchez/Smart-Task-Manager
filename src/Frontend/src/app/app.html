@@ -1,27 +1,31 @@
 <div class="min-h-screen bg-background text-foreground transition-colors duration-200 flex flex-col font-sans select-none">
-  
-  <!-- Main Header Bar -->
-  <header class="border-b border-border h-14 px-6 flex items-center justify-between bg-card/10 backdrop-blur-sm z-40">
-    <!-- Left Logo -->
-    <div class="flex items-center gap-2 select-none shrink-0">
-      <span class="font-sans font-extrabold tracking-wider text-xs uppercase text-foreground/90 app-logo">Smart Task Manager</span>
+
+  <!-- Masthead -->
+  <header class="border-b-2 border-foreground/90 h-16 px-6 flex items-center justify-between bg-background z-40">
+    <!-- Wordmark -->
+    <div class="flex items-baseline gap-2 select-none shrink-0">
+      <span class="font-display font-bold text-xl tracking-tight text-foreground">Smart</span>
+      <span class="font-display font-bold text-xl tracking-tight text-primary">Task</span>
+      <span class="hidden sm:inline-block font-mono text-[9px] uppercase tracking-[0.22em] text-foreground/40 border-l border-border pl-2.5 ml-0.5">
+        Manager
+      </span>
     </div>
 
     <!-- Center Smart NLP Input -->
     <div class="flex-grow max-w-lg mx-6 relative">
-      <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-foreground/35">
+      <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-foreground/35">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5 transition-colors" [class.text-accent]="isParsing()">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
         </svg>
       </span>
 
-      <input 
-        type="text" 
-        [ngModel]="rawInput()" 
+      <input
+        type="text"
+        [ngModel]="rawInput()"
         (ngModelChange)="rawInput.set($event)"
         (keydown.enter)="handleSmartInput()"
-        placeholder="Create new task or project..."
-        class="w-full pl-9 pr-10 py-1.5 bg-card border border-border text-xs rounded-full font-light text-foreground placeholder-foreground/35 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all duration-300 shadow-sm"
+        placeholder="Crea una tarea o proyecto..."
+        class="w-full pl-10 pr-10 py-2 bg-card border-2 border-border text-xs rounded-full font-medium text-foreground placeholder-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary transition-all duration-300 shadow-sm"
         [class.border-accent]="isParsing()"
         [class.animate-pulse]="isParsing()"
         [disabled]="isParsing()"
@@ -38,25 +42,23 @@
     </div>
 
     <!-- Right Header items -->
-    <div class="flex items-center gap-4 text-xs font-light text-foreground/60 shrink-0">
+    <div class="flex items-center gap-1 text-xs font-medium text-foreground/60 shrink-0">
       <!-- Search Button -->
-      <button class="flex items-center gap-1.5 hover:text-foreground cursor-pointer focus:outline-none">
+      <button class="flex items-center gap-1.5 rounded-full px-3 py-2 hover:bg-foreground/5 hover:text-foreground cursor-pointer focus:outline-none transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.602 10.602Z" />
         </svg>
-        <span>Search</span>
       </button>
 
       <!-- Notifications -->
-      <button class="flex items-center gap-1.5 hover:text-foreground cursor-pointer focus:outline-none">
+      <button class="rounded-full p-2 hover:bg-foreground/5 hover:text-foreground cursor-pointer focus:outline-none transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
           <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
         </svg>
-        <span>Notifications</span>
       </button>
 
       <!-- AI Settings Gear -->
-      <button (click)="openSettingsModal()" class="hover:text-foreground cursor-pointer focus:outline-none" title="Ajustes de IA">
+      <button (click)="openSettingsModal()" class="rounded-full p-2 hover:bg-foreground/5 hover:text-foreground cursor-pointer focus:outline-none transition-colors" title="Ajustes de IA">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
           <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.43l-1.003.828c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827a1.125 1.125 0 0 1 .26 1.43l-1.297 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.43l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -64,51 +66,51 @@
       </button>
 
       <!-- Theme Switcher -->
-      <button (click)="toggleTheme()" class="hover:text-foreground cursor-pointer focus:outline-none" title="Cambiar tema">
+      <button (click)="toggleTheme()" class="rounded-full p-2 hover:bg-foreground/5 hover:text-foreground cursor-pointer focus:outline-none transition-colors" title="Cambiar tema">
         @if (theme() === 'dark') {
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-amber-400">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-primary">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m0 13.5V21M5.22 5.22l1.58 1.58m9.75 9.75l1.58 1.58M3 12h2.25m13.5 0H21M5.22 18.78l1.58-1.58m9.75-9.75l1.58-1.58M12 7.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9Z" />
           </svg>
         } @else {
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-indigo-600">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-accent">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
           </svg>
         }
       </button>
 
       <!-- Profile Avatar -->
-      <div class="w-6 h-6 rounded-full border border-border bg-card text-foreground flex items-center justify-center font-bold text-[9px] select-none shadow-sm">
+      <div class="ml-1 w-7 h-7 rounded-full border-2 border-foreground bg-primary text-primary-foreground flex items-center justify-center font-bold text-[9px] select-none">
         JM
       </div>
     </div>
   </header>
 
   <!-- Sub-header selector and tabs -->
-  <section class="border-b border-border h-12 px-6 flex items-center justify-between bg-card/5 select-none relative">
+  <section class="border-b border-border h-12 px-6 flex items-center justify-between bg-card/30 select-none relative">
     <div class="flex items-center gap-6">
-      
+
       <!-- Project Dropdown Trigger -->
-      <div 
+      <div
         (click)="toggleBoardDropdown($event)"
         class="flex items-center gap-2 cursor-pointer font-semibold text-sm hover:text-foreground/80 relative">
-        <span class="w-2.5 h-2.5 rounded bg-primary shrink-0 block"></span>
-        <span class="tracking-tight text-xs font-semibold">{{ activeBoard() }}</span>
+        <span class="w-2.5 h-2.5 rounded-full bg-primary shrink-0 block"></span>
+        <span class="tracking-tight text-xs font-bold">{{ activeBoard() }}</span>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3 h-3 text-foreground/45">
           <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
         </svg>
 
         <!-- Boards Dropdown overlay menu -->
         @if (showBoardDropdown()) {
-          <div class="absolute top-8 left-0 bg-card border border-border rounded-xl shadow-xl w-60 p-1.5 z-50 animate-[fadeIn_0.15s_ease-out]">
+          <div class="absolute top-9 left-0 bg-card border-2 border-foreground/90 rounded-2xl shadow-xl w-60 p-1.5 z-50 animate-[fadeIn_0.15s_ease-out]">
             <div class="px-2.5 py-1.5 text-[9px] font-mono tracking-wider text-foreground/40 uppercase border-b border-border mb-1">
-              My Boards
+              Mis tableros
             </div>
             <ul class="flex flex-col gap-0.5">
               @for (board of boards(); track board) {
                 <li>
-                  <button 
+                  <button
                     (click)="selectBoard(board)"
-                    class="w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-mono transition-colors flex items-center justify-between hover:bg-background cursor-pointer focus:outline-none"
+                    class="w-full text-left px-2.5 py-1.5 rounded-xl text-xs font-mono transition-colors flex items-center justify-between hover:bg-foreground/5 cursor-pointer focus:outline-none"
                     [class.text-primary]="activeBoard() === board"
                     [class.font-bold]="activeBoard() === board">
                     <span>{{ board }}</span>
@@ -119,10 +121,10 @@
                 </li>
               }
               <li class="border-t border-border mt-1 pt-1">
-                <button 
+                <button
                   (click)="createNewBoard()"
-                  class="w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-mono text-primary font-bold hover:bg-background cursor-pointer focus:outline-none">
-                  + Create new board
+                  class="w-full text-left px-2.5 py-1.5 rounded-xl text-xs font-mono text-accent font-bold hover:bg-foreground/5 cursor-pointer focus:outline-none">
+                  + Crear tablero
                 </button>
               </li>
             </ul>
@@ -130,27 +132,26 @@
         }
       </div>
 
-      <!-- Navigation Tabs (mockup style) -->
+      <!-- Navigation Tabs -->
       <nav class="flex items-center gap-5 text-xs text-foreground/50 ml-6 border-l border-border pl-6 h-6">
-        <button class="relative font-medium text-foreground py-3 focus:outline-none cursor-pointer">
-          Board
-          <!-- Active underline blue strip -->
-          <span class="absolute bottom-[-13px] left-0 right-0 h-0.5 bg-primary rounded-full"></span>
+        <button class="relative font-bold text-foreground py-3 focus:outline-none cursor-pointer">
+          Tablero
+          <span class="absolute bottom-[-13px] left-0 right-0 h-[3px] bg-primary rounded-full"></span>
         </button>
-        <button class="hover:text-foreground transition-colors py-3 focus:outline-none cursor-pointer">List</button>
-        <button class="hover:text-foreground transition-colors py-3 focus:outline-none cursor-pointer">Timeline</button>
-        <button class="hover:text-foreground transition-colors py-3 focus:outline-none cursor-pointer">Files</button>
+        <button class="hover:text-foreground transition-colors py-3 focus:outline-none cursor-pointer">Lista</button>
+        <button class="hover:text-foreground transition-colors py-3 focus:outline-none cursor-pointer">Línea de tiempo</button>
+        <button class="hover:text-foreground transition-colors py-3 focus:outline-none cursor-pointer">Archivos</button>
       </nav>
     </div>
 
     <!-- Right layout buttons -->
-    <div class="flex items-center gap-3 text-foreground/40">
-      <button class="hover:text-foreground cursor-pointer focus:outline-none">
+    <div class="flex items-center gap-1 text-foreground/40">
+      <button class="rounded-full p-2 hover:bg-foreground/5 hover:text-foreground cursor-pointer focus:outline-none transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
           <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25A2.25 2.25 0 0 1 13.5 8.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
         </svg>
       </button>
-      <button class="hover:text-foreground cursor-pointer focus:outline-none">
+      <button class="rounded-full p-2 hover:bg-foreground/5 hover:text-foreground cursor-pointer focus:outline-none transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
         </svg>
@@ -161,9 +162,9 @@
   <!-- Error State Alert Banner -->
   @if (taskService.error()) {
     <div class="max-w-7xl w-full mx-auto px-8 mt-6">
-      <div class="bg-rose-500/10 border border-rose-500/30 text-rose-500 px-4 py-3 rounded-lg text-xs flex items-center justify-between shadow-sm">
-        <span>{{ taskService.error() }}</span>
-        <button (click)="taskService.error.set(null)" class="text-rose-500/70 hover:text-rose-500 cursor-pointer">
+      <div class="bg-accent/10 border-2 border-accent text-accent px-4 py-3 rounded-2xl text-xs flex items-center justify-between shadow-sm">
+        <span class="font-medium">{{ taskService.error() }}</span>
+        <button (click)="taskService.error.set(null)" class="text-accent/70 hover:text-accent cursor-pointer">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
           </svg>
@@ -175,115 +176,42 @@
   <!-- Main Kanban Board Canvas -->
   <main class="flex-grow max-w-7xl w-full mx-auto px-8 py-8 flex flex-col gap-6 overflow-x-auto">
     <div class="flex flex-row gap-6 items-start flex-grow">
-      
+
       <!-- TO DO COLUMN -->
       <div class="w-80 shrink-0 flex flex-col gap-4">
-        <!-- Column Header -->
-        <div class="flex items-center justify-between px-1 select-none">
-          <div class="flex items-center gap-2">
-            <h2 class="font-bold text-sm tracking-tight text-foreground/90">To Do</h2>
-            <span class="bg-neutral-200/60 dark:bg-neutral-800 text-foreground/50 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold">
-              {{ todoTasks().length }}
-            </span>
+        <div class="flex items-center justify-between px-1 pt-3 border-t-4 border-foreground/70 select-none">
+          <div class="flex items-baseline gap-2">
+            <h2 class="font-display text-lg font-bold tracking-tight text-foreground/90">To Do</h2>
+            <span class="font-mono text-[10px] font-semibold text-foreground/40">{{ todoTasks().length }}</span>
           </div>
-          <button (click)="openCreateModal('')" class="text-foreground/45 hover:text-foreground cursor-pointer focus:outline-none">
+          <button (click)="openCreateModal('')" class="rounded-full p-1.5 text-foreground/45 hover:bg-foreground/5 hover:text-foreground cursor-pointer focus:outline-none transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
           </button>
         </div>
 
-        <!-- Drop List container -->
-        <div 
+        <div
           id="todoList"
           cdkDropList
           [cdkDropListData]="todoTasks()"
           [cdkDropListConnectedTo]="['doingList', 'doneList']"
           (cdkDropListDropped)="onCardDropped($event, 'Todo')"
           class="flex flex-col gap-3 min-h-[500px]">
-          
+
           @for (task of todoTasks(); track task.id) {
-            <!-- Card -->
-            <div 
-              [cdkDragData]="task" 
-              cdkDrag 
-              class="bg-card border border-border rounded-xl p-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:border-primary/40 hover:shadow-md cursor-grab active:cursor-grabbing transition-all duration-200 relative overflow-visible group flex flex-col gap-2.5">
-              
-              <div class="flex justify-between items-start gap-4">
-                <span class="font-semibold text-xs leading-snug tracking-tight text-foreground/90 transition-colors group-hover:text-primary">
-                  {{ task.title }}
-                </span>
-                
-                <!-- Card Menu trigger -->
-                <div class="relative shrink-0 select-none">
-                  <button 
-                    (click)="toggleCardMenu(task.id, $event)" 
-                    class="text-foreground/35 hover:text-foreground cursor-pointer focus:outline-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-                    </svg>
-                  </button>
-
-                  <!-- Card Action Overlay menu -->
-                  @if (activeCardMenuId() === task.id) {
-                    <div class="absolute right-0 top-6 bg-card border border-border rounded-lg shadow-xl w-24 py-1 z-50 animate-[fadeIn_0.1s_ease-out]">
-                      <button (click)="openEditModal(task)" class="w-full text-left px-3 py-1 hover:bg-background text-xs font-mono text-foreground cursor-pointer">Editar</button>
-                      <button (click)="deleteTask(task.id)" class="w-full text-left px-3 py-1 hover:bg-background text-xs font-mono text-rose-500 cursor-pointer">Eliminar</button>
-                    </div>
-                  }
-                </div>
-              </div>
-
-              @if (task.description) {
-                <p class="text-[11px] text-foreground/50 font-normal leading-relaxed line-clamp-3">
-                  {{ task.description }}
-                </p>
-              }
-
-              <!-- Badges footer -->
-              <div class="flex items-center justify-between gap-2 pt-1.5">
-                <div class="flex flex-wrap items-center gap-1.5">
-                  <span class="bg-primary text-white text-[9px] font-medium px-2 py-0.5 rounded-full select-none tracking-tight">
-                    {{ task.category || 'General' }}
-                  </span>
-                  @if (task.priority === 'High') {
-                    <span class="bg-accent text-white text-[9px] font-medium px-2 py-0.5 rounded-full select-none tracking-tight">
-                      High Priority
-                    </span>
-                  }
-                  <span class="bg-neutral-100 dark:bg-neutral-800 text-foreground/50 text-[9px] px-2 py-0.5 rounded-full select-none font-mono tracking-tight">
-                    Sprint 8
-                  </span>
-                </div>
-              </div>
-
-              <!-- Footer with date and avatars -->
-              <div class="flex items-center justify-between border-t border-border/50 pt-2.5 mt-0.5">
-                <!-- Overlapping Avatars -->
-                <div class="flex items-center -space-x-1.5 select-none">
-                  <div class="w-4.5 h-4.5 rounded-full bg-primary text-white text-[7px] flex items-center justify-center font-bold border border-card shadow-sm">
-                    JM
-                  </div>
-                  <div class="w-4.5 h-4.5 rounded-full bg-accent text-white text-[7px] flex items-center justify-center font-bold border border-card shadow-sm">
-                    JM
-                  </div>
-                </div>
-
-                <!-- Date -->
-                @if (task.dueDate) {
-                  <span class="flex items-center gap-1 font-light text-[10px] text-foreground/40">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 text-foreground/35">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-                    </svg>
-                    {{ task.dueDate | date:'d MMM' }}
-                  </span>
-                }
-              </div>
-
-            </div>
+            <app-task-card
+              cdkDrag
+              [cdkDragData]="task"
+              [cdkDragStartDelay]="180"
+              [task]="task"
+              variant="todo"
+              (edit)="openEditModal($event)"
+              (delete)="deleteTask($event)">
+            </app-task-card>
           } @empty {
-            <div class="flex-grow flex flex-col items-center justify-center text-center p-8 border border-dashed border-border/60 rounded-xl text-foreground/25 text-[10px] font-mono select-none">
-              No tasks
+            <div class="flex-grow flex flex-col items-center justify-center text-center p-8 border-2 border-dashed border-border rounded-2xl text-foreground/30 select-none">
+              <span class="font-display text-sm">Sin tareas</span>
             </div>
           }
         </div>
@@ -291,108 +219,39 @@
 
       <!-- DOING COLUMN -->
       <div class="w-80 shrink-0 flex flex-col gap-4">
-        <!-- Column Header -->
-        <div class="flex items-center justify-between px-1 select-none">
-          <div class="flex items-center gap-2">
-            <h2 class="font-bold text-sm tracking-tight text-foreground/90">Doing</h2>
-            <span class="bg-neutral-200/60 dark:bg-neutral-800 text-foreground/50 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold">
-              {{ doingTasks().length }}
-            </span>
+        <div class="flex items-center justify-between px-1 pt-3 border-t-4 border-primary select-none">
+          <div class="flex items-baseline gap-2">
+            <h2 class="font-display text-lg font-bold tracking-tight text-foreground/90">Doing</h2>
+            <span class="font-mono text-[10px] font-semibold text-primary">{{ doingTasks().length }}</span>
           </div>
-          <button (click)="openCreateModal('')" class="text-foreground/45 hover:text-foreground cursor-pointer focus:outline-none">
+          <button (click)="openCreateModal('')" class="rounded-full p-1.5 text-foreground/45 hover:bg-foreground/5 hover:text-foreground cursor-pointer focus:outline-none transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
           </button>
         </div>
 
-        <div 
+        <div
           id="doingList"
           cdkDropList
           [cdkDropListData]="doingTasks()"
           [cdkDropListConnectedTo]="['todoList', 'doneList']"
-          (cdkDropListDropped)="onCardDropped($event, 'Doing')"
+          (cdkDropListDropped)="onCardDropped($event, 'InProgress')"
           class="flex flex-col gap-3 min-h-[500px]">
-          
+
           @for (task of doingTasks(); track task.id) {
-            <div 
-              [cdkDragData]="task" 
-              cdkDrag 
-              class="bg-card border border-border rounded-xl p-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:border-primary/40 hover:shadow-md cursor-grab active:cursor-grabbing transition-all duration-200 relative overflow-visible group flex flex-col gap-2.5">
-              
-              @if (task.priority === 'High') {
-                <div class="absolute left-0 top-0 bottom-0 w-1 bg-accent"></div>
-              }
-
-              <div class="flex justify-between items-start gap-4">
-                <span class="font-semibold text-xs leading-snug tracking-tight text-foreground/90 transition-colors group-hover:text-primary">
-                  {{ task.title }}
-                </span>
-                
-                <div class="relative shrink-0 select-none">
-                  <button 
-                    (click)="toggleCardMenu(task.id, $event)" 
-                    class="text-foreground/35 hover:text-foreground cursor-pointer focus:outline-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-                    </svg>
-                  </button>
-
-                  @if (activeCardMenuId() === task.id) {
-                    <div class="absolute right-0 top-6 bg-card border border-border rounded-lg shadow-xl w-24 py-1 z-50 animate-[fadeIn_0.1s_ease-out]">
-                      <button (click)="openEditModal(task)" class="w-full text-left px-3 py-1 hover:bg-background text-xs font-mono text-foreground cursor-pointer">Editar</button>
-                      <button (click)="deleteTask(task.id)" class="w-full text-left px-3 py-1 hover:bg-background text-xs font-mono text-rose-500 cursor-pointer">Eliminar</button>
-                    </div>
-                  }
-                </div>
-              </div>
-
-              @if (task.description) {
-                <p class="text-[11px] text-foreground/50 font-normal leading-relaxed line-clamp-3">
-                  {{ task.description }}
-                </p>
-              }
-
-              <div class="flex items-center justify-between gap-2 pt-1.5">
-                <div class="flex flex-wrap items-center gap-1.5">
-                  <span class="bg-primary text-white text-[9px] font-medium px-2 py-0.5 rounded-full select-none tracking-tight">
-                    {{ task.category || 'General' }}
-                  </span>
-                  @if (task.priority === 'High') {
-                    <span class="bg-accent text-white text-[9px] font-medium px-2 py-0.5 rounded-full select-none tracking-tight">
-                      High Priority
-                    </span>
-                  }
-                  <span class="bg-neutral-100 dark:bg-neutral-800 text-foreground/50 text-[9px] px-2 py-0.5 rounded-full select-none font-mono tracking-tight">
-                    Sprint 8
-                  </span>
-                </div>
-              </div>
-
-              <div class="flex items-center justify-between border-t border-border/50 pt-2.5 mt-0.5">
-                <div class="flex items-center -space-x-1.5 select-none">
-                  <div class="w-4.5 h-4.5 rounded-full bg-primary text-white text-[7px] flex items-center justify-center font-bold border border-card shadow-sm">
-                    JM
-                  </div>
-                  <div class="w-4.5 h-4.5 rounded-full bg-accent text-white text-[7px] flex items-center justify-center font-bold border border-card shadow-sm">
-                    JM
-                  </div>
-                </div>
-
-                @if (task.dueDate) {
-                  <span class="flex items-center gap-1 font-light text-[10px] text-foreground/40">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 text-foreground/35">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-                    </svg>
-                    {{ task.dueDate | date:'d MMM' }}
-                  </span>
-                }
-              </div>
-
-            </div>
+            <app-task-card
+              cdkDrag
+              [cdkDragData]="task"
+              [cdkDragStartDelay]="180"
+              [task]="task"
+              variant="doing"
+              (edit)="openEditModal($event)"
+              (delete)="deleteTask($event)">
+            </app-task-card>
           } @empty {
-            <div class="flex-grow flex flex-col items-center justify-center text-center p-8 border border-dashed border-border/60 rounded-xl text-foreground/25 text-[10px] font-mono select-none">
-              No tasks
+            <div class="flex-grow flex flex-col items-center justify-center text-center p-8 border-2 border-dashed border-border rounded-2xl text-foreground/30 select-none">
+              <span class="font-display text-sm">Sin tareas</span>
             </div>
           }
         </div>
@@ -400,108 +259,39 @@
 
       <!-- DONE COLUMN -->
       <div class="w-80 shrink-0 flex flex-col gap-4">
-        <!-- Column Header -->
-        <div class="flex items-center justify-between px-1 select-none">
-          <div class="flex items-center gap-2">
-            <h2 class="font-bold text-sm tracking-tight text-foreground/90">Done</h2>
-            <span class="bg-neutral-200/60 dark:bg-neutral-800 text-foreground/50 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold">
-              {{ doneTasks().length }}
-            </span>
+        <div class="flex items-center justify-between px-1 pt-3 border-t-4 border-success select-none">
+          <div class="flex items-baseline gap-2">
+            <h2 class="font-display text-lg font-bold tracking-tight text-foreground/90">Done</h2>
+            <span class="font-mono text-[10px] font-semibold text-success">{{ doneTasks().length }}</span>
           </div>
-          <button (click)="openCreateModal('')" class="text-foreground/45 hover:text-foreground cursor-pointer focus:outline-none">
+          <button (click)="openCreateModal('')" class="rounded-full p-1.5 text-foreground/45 hover:bg-foreground/5 hover:text-foreground cursor-pointer focus:outline-none transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
             </svg>
           </button>
         </div>
 
-        <div 
+        <div
           id="doneList"
           cdkDropList
           [cdkDropListData]="doneTasks()"
           [cdkDropListConnectedTo]="['todoList', 'doingList']"
           (cdkDropListDropped)="onCardDropped($event, 'Done')"
           class="flex flex-col gap-3 min-h-[500px]">
-          
+
           @for (task of doneTasks(); track task.id) {
-            <div 
-              [cdkDragData]="task" 
-              cdkDrag 
-              class="bg-card border border-border rounded-xl p-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:border-primary/40 hover:shadow-md cursor-grab active:cursor-grabbing transition-all duration-200 relative overflow-visible group flex flex-col gap-2.5 opacity-80 hover:opacity-100">
-              
-              @if (task.priority === 'High') {
-                <div class="absolute left-0 top-0 bottom-0 w-1 bg-accent"></div>
-              }
-
-              <div class="flex justify-between items-start gap-4">
-                <span class="font-semibold text-xs leading-snug tracking-tight text-foreground/75 line-through transition-colors group-hover:text-primary">
-                  {{ task.title }}
-                </span>
-                
-                <div class="relative shrink-0 select-none">
-                  <button 
-                    (click)="toggleCardMenu(task.id, $event)" 
-                    class="text-foreground/35 hover:text-foreground cursor-pointer focus:outline-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-                    </svg>
-                  </button>
-
-                  @if (activeCardMenuId() === task.id) {
-                    <div class="absolute right-0 top-6 bg-card border border-border rounded-lg shadow-xl w-24 py-1 z-50 animate-[fadeIn_0.1s_ease-out]">
-                      <button (click)="openEditModal(task)" class="w-full text-left px-3 py-1 hover:bg-background text-xs font-mono text-foreground cursor-pointer">Editar</button>
-                      <button (click)="deleteTask(task.id)" class="w-full text-left px-3 py-1 hover:bg-background text-xs font-mono text-rose-500 cursor-pointer">Eliminar</button>
-                    </div>
-                  }
-                </div>
-              </div>
-
-              @if (task.description) {
-                <p class="text-[11px] text-foreground/45 font-normal leading-relaxed line-clamp-3">
-                  {{ task.description }}
-                </p>
-              }
-
-              <div class="flex items-center justify-between gap-2 pt-1.5">
-                <div class="flex flex-wrap items-center gap-1.5">
-                  <span class="bg-primary text-white text-[9px] font-medium px-2 py-0.5 rounded-full select-none tracking-tight">
-                    {{ task.category || 'General' }}
-                  </span>
-                  @if (task.priority === 'High') {
-                    <span class="bg-accent text-white text-[9px] font-medium px-2 py-0.5 rounded-full select-none tracking-tight">
-                      High Priority
-                    </span>
-                  }
-                  <span class="bg-neutral-100 dark:bg-neutral-800 text-foreground/50 text-[9px] px-2 py-0.5 rounded-full select-none font-mono tracking-tight">
-                    Sprint 8
-                  </span>
-                </div>
-              </div>
-
-              <div class="flex items-center justify-between border-t border-border/50 pt-2.5 mt-0.5">
-                <div class="flex items-center -space-x-1.5 select-none">
-                  <div class="w-4.5 h-4.5 rounded-full bg-primary text-white text-[7px] flex items-center justify-center font-bold border border-card shadow-sm">
-                    JM
-                  </div>
-                  <div class="w-4.5 h-4.5 rounded-full bg-accent text-white text-[7px] flex items-center justify-center font-bold border border-card shadow-sm">
-                    JM
-                  </div>
-                </div>
-
-                @if (task.dueDate) {
-                  <span class="flex items-center gap-1 font-light text-[10px] text-foreground/35">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 text-foreground/30">
-                      <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-                    </svg>
-                    {{ task.dueDate | date:'d MMM' }}
-                  </span>
-                }
-              </div>
-
-            </div>
+            <app-task-card
+              cdkDrag
+              [cdkDragData]="task"
+              [cdkDragStartDelay]="180"
+              [task]="task"
+              variant="done"
+              (edit)="openEditModal($event)"
+              (delete)="deleteTask($event)">
+            </app-task-card>
           } @empty {
-            <div class="flex-grow flex flex-col items-center justify-center text-center p-8 border border-dashed border-border/60 rounded-xl text-foreground/25 text-[10px] font-mono select-none">
-              No tasks
+            <div class="flex-grow flex flex-col items-center justify-center text-center p-8 border-2 border-dashed border-border rounded-2xl text-foreground/30 select-none">
+              <span class="font-display text-sm">Sin tareas</span>
             </div>
           }
         </div>
@@ -513,14 +303,14 @@
   <!-- Task Manual Creation & Edit Overlay Modal -->
   @if (showModal()) {
     <div class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div class="bg-background border border-border w-full max-w-lg rounded-xl shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]">
-        
+      <div class="bg-background border-2 border-foreground/90 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+
         <!-- Modal Header -->
-        <div class="px-6 py-4 border-b border-border/80 flex items-center justify-between bg-card/25">
-          <h3 class="font-bold text-xs tracking-wide font-mono uppercase text-foreground/80">
-            {{ editingTask() ? 'Editar Tarea' : 'Creación Manual de Tarea' }}
+        <div class="px-6 py-5 border-b-2 border-foreground/90 flex items-center justify-between bg-card/40">
+          <h3 class="font-display text-lg font-bold text-foreground/90">
+            {{ editingTask() ? 'Editar tarea' : 'Nueva tarea' }}
           </h3>
-          <button (click)="closeModal()" class="text-foreground/45 hover:text-foreground p-1 cursor-pointer">
+          <button (click)="closeModal()" class="rounded-full p-1.5 text-foreground/45 hover:bg-foreground/5 hover:text-foreground cursor-pointer">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
             </svg>
@@ -531,29 +321,29 @@
         <div class="p-6 flex flex-col gap-5">
           <!-- Title Input -->
           <div class="flex flex-col gap-1.5">
-            <label class="text-[10px] font-mono uppercase tracking-wider text-foreground/50 font-bold">Título de la Tarea *</label>
-            <input 
-              type="text" 
-              [ngModel]="modalTitle()" 
+            <label class="text-[10px] font-mono uppercase tracking-wider text-foreground/50 font-bold">Título de la tarea *</label>
+            <input
+              type="text"
+              [ngModel]="modalTitle()"
               (ngModelChange)="modalTitle.set($event)"
               placeholder="Escribe el título..."
-              class="w-full px-3 py-2 border rounded-lg bg-card text-foreground placeholder-foreground/35 focus:outline-none focus:ring-1 focus:ring-primary text-sm animate-none"
-              [class.border-rose-500]="formErrors()['Title']"
+              class="w-full px-3.5 py-2.5 border-2 border-border rounded-xl bg-card text-foreground placeholder-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-sm animate-none"
+              [class.border-accent]="formErrors()['Title']"
             />
             @if (formErrors()['Title']) {
-              <span class="text-[10px] text-rose-500 mt-1 font-mono font-light">{{ formErrors()['Title']?.[0] }}</span>
+              <span class="text-[10px] text-accent mt-1 font-mono font-medium">{{ formErrors()['Title']?.[0] }}</span>
             }
           </div>
 
           <!-- Description Input -->
           <div class="flex flex-col gap-1.5">
             <label class="text-[10px] font-mono uppercase tracking-wider text-foreground/50 font-bold">Descripción / Detalles</label>
-            <textarea 
-              [ngModel]="modalDescription()" 
+            <textarea
+              [ngModel]="modalDescription()"
               (ngModelChange)="modalDescription.set($event)"
               placeholder="Detalles adicionales..."
               rows="3"
-              class="w-full px-3 py-2 border rounded-lg bg-card text-foreground placeholder-foreground/35 focus:outline-none focus:ring-1 focus:ring-primary text-sm resize-none"
+              class="w-full px-3.5 py-2.5 border-2 border-border rounded-xl bg-card text-foreground placeholder-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-sm resize-none"
             ></textarea>
           </div>
 
@@ -561,28 +351,28 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <!-- Due Date -->
             <div class="flex flex-col gap-1.5">
-              <label class="text-[10px] font-mono uppercase tracking-wider text-foreground/50 font-bold">Fecha Límite</label>
-              <input 
-                type="datetime-local" 
-                [ngModel]="modalDueDate()" 
+              <label class="text-[10px] font-mono uppercase tracking-wider text-foreground/50 font-bold">Fecha límite</label>
+              <input
+                type="datetime-local"
+                [ngModel]="modalDueDate()"
                 (ngModelChange)="modalDueDate.set($event)"
-                class="w-full px-3 py-2 border rounded-lg bg-card text-foreground focus:outline-none focus:ring-1 focus:ring-primary text-sm"
-                [class.border-rose-500]="formErrors()['DueDate']"
+                class="w-full px-3.5 py-2.5 border-2 border-border rounded-xl bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-sm"
+                [class.border-accent]="formErrors()['DueDate']"
               />
               @if (formErrors()['DueDate']) {
-                <span class="text-[10px] text-rose-500 mt-1 font-mono font-light">{{ formErrors()['DueDate']?.[0] }}</span>
+                <span class="text-[10px] text-accent mt-1 font-mono font-medium">{{ formErrors()['DueDate']?.[0] }}</span>
               }
             </div>
 
             <!-- Category -->
             <div class="flex flex-col gap-1.5">
               <label class="text-[10px] font-mono uppercase tracking-wider text-foreground/50 font-bold">Tablero / Categoría</label>
-              <input 
-                type="text" 
-                [ngModel]="modalCategory()" 
+              <input
+                type="text"
+                [ngModel]="modalCategory()"
                 (ngModelChange)="modalCategory.set($event)"
                 placeholder="ej: Trabajo, Reunión, Personal"
-                class="w-full px-3 py-2 border rounded-lg bg-card text-foreground placeholder-foreground/35 focus:outline-none focus:ring-1 focus:ring-primary text-sm"
+                class="w-full px-3.5 py-2.5 border-2 border-border rounded-xl bg-card text-foreground placeholder-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-sm"
               />
             </div>
           </div>
@@ -591,31 +381,25 @@
           <div class="flex flex-col gap-2 pt-2">
             <label class="text-[10px] font-mono uppercase tracking-wider text-foreground/50 font-bold">Prioridad</label>
             <div class="grid grid-cols-3 gap-2">
-              <button 
+              <button
                 type="button"
                 (click)="modalPriority.set('Low')"
-                class="px-3 py-2.5 text-xs font-mono border rounded-lg hover:bg-card transition-colors cursor-pointer focus:outline-none"
-                [class.bg-card]="modalPriority() === 'Low'"
-                [class.border-primary]="modalPriority() === 'Low'"
-                [class.text-primary]="modalPriority() === 'Low'">
+                class="px-3 py-2.5 text-xs font-mono font-semibold border-2 rounded-xl transition-colors cursor-pointer focus:outline-none"
+                [class]="modalPriority() === 'Low' ? 'bg-foreground/5 border-foreground text-foreground' : 'border-border'">
                 BAJA
               </button>
-              <button 
+              <button
                 type="button"
                 (click)="modalPriority.set('Medium')"
-                class="px-3 py-2.5 text-xs font-mono border rounded-lg hover:bg-card transition-colors cursor-pointer focus:outline-none"
-                [class.bg-card]="modalPriority() === 'Medium'"
-                [class.border-primary]="modalPriority() === 'Medium'"
-                [class.text-primary]="modalPriority() === 'Medium'">
+                class="px-3 py-2.5 text-xs font-mono font-semibold border-2 rounded-xl transition-colors cursor-pointer focus:outline-none"
+                [class]="modalPriority() === 'Medium' ? 'bg-primary/10 border-primary text-primary' : 'border-border'">
                 MEDIA
               </button>
-              <button 
+              <button
                 type="button"
                 (click)="modalPriority.set('High')"
-                class="px-3 py-2.5 text-xs font-mono border rounded-lg hover:bg-card transition-colors cursor-pointer focus:outline-none"
-                [class.bg-card]="modalPriority() === 'High'"
-                [class.border-accent]="modalPriority() === 'High'"
-                [class.text-accent]="modalPriority() === 'High'">
+                class="px-3 py-2.5 text-xs font-mono font-semibold border-2 rounded-xl transition-colors cursor-pointer focus:outline-none"
+                [class]="modalPriority() === 'High' ? 'bg-accent/10 border-accent text-accent' : 'border-border'">
                 ALTA
               </button>
             </div>
@@ -624,17 +408,17 @@
         </div>
 
         <!-- Modal Footer Actions -->
-        <div class="px-6 py-4 border-t border-border/80 flex items-center justify-end gap-3 bg-card/25">
-          <button 
-            type="button" 
-            (click)="closeModal()" 
-            class="px-4 py-2 text-xs font-mono border border-border/80 hover:bg-card/50 rounded-lg cursor-pointer transition-colors focus:outline-none">
+        <div class="px-6 py-4 border-t-2 border-foreground/90 flex items-center justify-end gap-3 bg-card/40">
+          <button
+            type="button"
+            (click)="closeModal()"
+            class="px-4 py-2.5 text-xs font-mono font-semibold border-2 border-border hover:bg-foreground/5 rounded-xl cursor-pointer transition-colors focus:outline-none">
             Cancelar
           </button>
-          <button 
-            type="button" 
-            (click)="saveTask()" 
-            class="px-4 py-2 text-xs font-mono bg-primary text-white hover:bg-primary/95 rounded-lg cursor-pointer transition-colors focus:outline-none shadow-sm">
+          <button
+            type="button"
+            (click)="saveTask()"
+            class="px-4 py-2.5 text-xs font-mono font-semibold bg-primary text-primary-foreground hover:opacity-90 rounded-xl cursor-pointer transition-opacity focus:outline-none shadow-sm">
             Guardar
           </button>
         </div>
@@ -646,14 +430,14 @@
   <!-- AI Settings Configuration Modal -->
   @if (showSettingsModal()) {
     <div class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div class="bg-background border border-border w-full max-w-lg rounded-xl shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]">
-        
+      <div class="bg-background border-2 border-foreground/90 w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+
         <!-- Modal Header -->
-        <div class="px-6 py-4 border-b border-border/80 flex items-center justify-between bg-card/25">
-          <h3 class="font-bold text-xs tracking-wide font-mono uppercase text-foreground/80">
+        <div class="px-6 py-5 border-b-2 border-foreground/90 flex items-center justify-between bg-card/40">
+          <h3 class="font-display text-lg font-bold text-foreground/90">
             Ajustes de IA (Opcional)
           </h3>
-          <button (click)="closeSettingsModal()" class="text-foreground/45 hover:text-foreground p-1 cursor-pointer">
+          <button (click)="closeSettingsModal()" class="rounded-full p-1.5 text-foreground/45 hover:bg-foreground/5 hover:text-foreground cursor-pointer">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
             </svg>
@@ -663,30 +447,30 @@
         <!-- Modal Body -->
         <div class="p-6 flex flex-col gap-5">
           <!-- Enable AI Connection Toggle -->
-          <div class="flex items-center justify-between pb-2 border-b border-border/60">
+          <div class="flex items-center justify-between pb-3 border-b border-border">
             <div class="flex flex-col">
-              <span class="text-xs font-bold text-foreground/90">Habilitar Procesamiento de IA</span>
+              <span class="text-xs font-bold text-foreground/90">Habilitar procesamiento de IA</span>
               <span class="text-[10px] text-foreground/40 font-mono">Permite parsear texto libre con IA</span>
             </div>
             <label class="relative inline-flex items-center cursor-pointer select-none">
-              <input 
-                type="checkbox" 
-                [ngModel]="aiEnabled()" 
+              <input
+                type="checkbox"
+                [ngModel]="aiEnabled()"
                 (ngModelChange)="aiEnabled.set($event)"
                 class="sr-only peer"
               />
-              <div class="w-9 h-5 bg-border/80 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-border after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+              <div class="w-10 h-5.5 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-background after:border after:border-foreground/20 after:rounded-full after:h-4.5 after:w-4.5 after:transition-all peer-checked:bg-primary"></div>
             </label>
           </div>
 
           @if (aiEnabled()) {
             <!-- AI Provider Select -->
             <div class="flex flex-col gap-1.5">
-              <label class="text-[10px] font-mono uppercase tracking-wider text-foreground/50 font-bold">Proveedor de Inteligencia Artificial</label>
-              <select 
-                [ngModel]="aiProvider()" 
+              <label class="text-[10px] font-mono uppercase tracking-wider text-foreground/50 font-bold">Proveedor de inteligencia artificial</label>
+              <select
+                [ngModel]="aiProvider()"
                 (ngModelChange)="aiProvider.set($event)"
-                class="w-full px-3 py-2 border rounded-lg bg-card text-foreground focus:outline-none focus:ring-1 focus:ring-primary text-sm font-sans"
+                class="w-full px-3.5 py-2.5 border-2 border-border rounded-xl bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-sm font-sans"
               >
                 <option value="Gemini">Google Gemini AI</option>
                 <option value="OpenAI">OpenAI (GPT)</option>
@@ -696,42 +480,42 @@
             <!-- API Key Input -->
             <div class="flex flex-col gap-1.5">
               <label class="text-[10px] font-mono uppercase tracking-wider text-foreground/50 font-bold">Clave de API (API Key)</label>
-              <input 
-                type="password" 
-                [ngModel]="aiApiKey()" 
+              <input
+                type="password"
+                [ngModel]="aiApiKey()"
                 (ngModelChange)="aiApiKey.set($event)"
                 placeholder="Escribe tu API Key..."
-                class="w-full px-3 py-2 border rounded-lg bg-card text-foreground placeholder-foreground/30 focus:outline-none focus:ring-1 focus:ring-primary text-sm font-mono"
+                class="w-full px-3.5 py-2.5 border-2 border-border rounded-xl bg-card text-foreground placeholder-foreground/30 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-sm font-mono"
               />
             </div>
 
             <!-- Model Name Input -->
             <div class="flex flex-col gap-1.5">
-              <label class="text-[10px] font-mono uppercase tracking-wider text-foreground/50 font-bold">Nombre del Modelo</label>
-              <input 
-                type="text" 
-                [ngModel]="aiModelName()" 
+              <label class="text-[10px] font-mono uppercase tracking-wider text-foreground/50 font-bold">Nombre del modelo</label>
+              <input
+                type="text"
+                [ngModel]="aiModelName()"
                 (ngModelChange)="aiModelName.set($event)"
                 placeholder="ej: gemini-1.5-flash o gpt-4o-mini"
-                class="w-full px-3 py-2 border rounded-lg bg-card text-foreground placeholder-foreground/35 focus:outline-none focus:ring-1 focus:ring-primary text-sm font-mono"
+                class="w-full px-3.5 py-2.5 border-2 border-border rounded-xl bg-card text-foreground placeholder-foreground/35 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary text-sm font-mono"
               />
             </div>
           }
         </div>
 
         <!-- Modal Footer Actions -->
-        <div class="px-6 py-4 border-t border-border/80 flex items-center justify-end gap-3 bg-card/25">
-          <button 
-            type="button" 
-            (click)="closeSettingsModal()" 
-            class="px-4 py-2 text-xs font-mono border border-border/80 hover:bg-card/50 rounded-lg cursor-pointer transition-colors focus:outline-none">
+        <div class="px-6 py-4 border-t-2 border-foreground/90 flex items-center justify-end gap-3 bg-card/40">
+          <button
+            type="button"
+            (click)="closeSettingsModal()"
+            class="px-4 py-2.5 text-xs font-mono font-semibold border-2 border-border hover:bg-foreground/5 rounded-xl cursor-pointer transition-colors focus:outline-none">
             Cancelar
           </button>
-          <button 
-            type="button" 
-            (click)="saveAiSettings()" 
-            class="px-4 py-2 text-xs font-mono bg-primary text-white hover:bg-primary/95 rounded-lg cursor-pointer transition-colors focus:outline-none shadow-sm">
-            Guardar Cambios
+          <button
+            type="button"
+            (click)="saveAiSettings()"
+            class="px-4 py-2.5 text-xs font-mono font-semibold bg-primary text-primary-foreground hover:opacity-90 rounded-xl cursor-pointer transition-opacity focus:outline-none shadow-sm">
+            Guardar cambios
           </button>
         </div>
 

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700;8..60,800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 
 @theme {
@@ -8,34 +8,60 @@
   --color-card-foreground: var(--card-foreground);
   --color-border: var(--border);
   --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
   --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+
+  --font-display: 'Source Serif 4', ui-serif, Georgia, 'Times New Roman', serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
 }
 
+/*
+  Editorial theme: white/black is the dominant canvas (black takes over as
+  the "white" surface in dark mode), with electric blue + rose/pink reserved
+  strictly for accents, state, and priority signals.
+*/
 :root {
-  --background: #FAFAFA;
-  --foreground: #09090B;
+  --background: #FFFFFF;
+  --foreground: #0A0A0A;
   --card: #FFFFFF;
-  --card-foreground: #09090B;
-  --border: #E4E4E7;
-  --primary: #0066FF;
-  --accent: #F43F5E;
+  --card-foreground: #0A0A0A;
+  --border: rgba(10, 10, 10, 0.13);
+  --primary: #2454EB;
+  --primary-foreground: #FFFFFF;
+  --accent: #E11D74;
+  --accent-foreground: #FFFFFF;
+  --success: #0E8F53;
+  --success-foreground: #FFFFFF;
 }
 
 .dark {
   --background: #000000;
-  --foreground: #E4E4E7;
-  --card: #18181B;
-  --card-foreground: #E4E4E7;
-  --border: #27272A;
-  --primary: #0066FF;
-  --accent: #F43F5E;
+  --foreground: #F5F5F3;
+  --card: #0A0A0A;
+  --card-foreground: #F5F5F3;
+  --border: rgba(245, 245, 243, 0.16);
+  --primary: #4C86FF;
+  --primary-foreground: #04070D;
+  --accent: #FF5FA8;
+  --accent-foreground: #1A0410;
+  --success: #34D399;
+  --success-foreground: #052E1F;
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-sans);
   transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   margin: 0;
   padding: 0;
+}
+
+::selection {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
 }

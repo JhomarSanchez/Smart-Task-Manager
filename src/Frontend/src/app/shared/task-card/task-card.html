@@ -1,0 +1,72 @@
+<div
+  (click)="onCardClick()"
+  class="task-card group relative flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 pl-5 cursor-pointer overflow-hidden"
+  [class.task-card--done]="variant === 'done'"
+  [attr.data-priority]="task.priority">
+
+  <!-- Priority signal bar (left edge) -->
+  <span
+    class="absolute left-0 top-0 bottom-0 w-1.5"
+    [class.bg-accent]="task.priority === 'High'"
+    [class.bg-primary]="task.priority === 'Medium'"
+    [class.bg-foreground]="task.priority === 'Low'"
+    [class.opacity-25]="task.priority === 'Low'">
+  </span>
+
+  <!-- Eyebrow row: category label + delete affordance -->
+  <div class="flex items-start justify-between gap-3">
+    <span class="font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-foreground/45">
+      {{ task.category || 'General' }}
+    </span>
+
+    <button
+      type="button"
+      (click)="onDeleteClick($event)"
+      title="Eliminar tarea"
+      class="shrink-0 -mt-1 -mr-1 rounded-full p-1 text-foreground/30 opacity-0 transition-all duration-150 hover:bg-accent/10 hover:text-accent focus:opacity-100 focus:outline-none group-hover:opacity-100 cursor-pointer">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="h-3.5 w-3.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Title -->
+  <h3
+    class="text-[13px] font-bold leading-snug tracking-tight transition-colors group-hover:text-primary"
+    [class]="variant === 'done' ? 'line-through text-foreground/55' : 'text-foreground/95'">
+    {{ task.title }}
+  </h3>
+
+  <!-- Description -->
+  @if (task.description) {
+    <p class="line-clamp-2 text-[11.5px] font-normal leading-relaxed text-foreground/50">
+      {{ task.description }}
+    </p>
+  }
+
+  <!-- Footer: priority pill, due date, drag affordance -->
+  <div class="mt-1 flex items-center justify-between gap-2 border-t border-border/70 pt-2.5">
+    <div class="flex flex-wrap items-center gap-1.5">
+      @if (task.priority === 'High') {
+        <span class="rounded-full bg-accent px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-accent-foreground">
+          Alta
+        </span>
+      }
+      @if (task.dueDate) {
+        <span class="flex items-center gap-1 font-mono text-[9.5px] font-medium text-foreground/40">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-3 w-3">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+          </svg>
+          {{ task.dueDate | date:'d MMM' }}
+        </span>
+      }
+    </div>
+
+    <!-- Drag affordance dots (visual hint: hold to drag) -->
+    <span class="drag-handle-hint flex items-center gap-[3px] text-foreground/25" title="Mantén pulsado para arrastrar">
+      <span class="h-1 w-1 rounded-full bg-current"></span>
+      <span class="h-1 w-1 rounded-full bg-current"></span>
+      <span class="h-1 w-1 rounded-full bg-current"></span>
+    </span>
+  </div>
+</div>
