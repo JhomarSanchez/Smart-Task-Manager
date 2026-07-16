@@ -1,8 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TaskItem } from '../../core/models/task.model';
-
-export type TaskCardVariant = 'todo' | 'doing' | 'done';
 
 @Component({
   selector: 'app-task-card',
@@ -13,17 +11,30 @@ export type TaskCardVariant = 'todo' | 'doing' | 'done';
 })
 export class TaskCardComponent {
   @Input({ required: true }) task!: TaskItem;
-  @Input() variant: TaskCardVariant = 'todo';
 
   @Output() edit = new EventEmitter<TaskItem>();
   @Output() delete = new EventEmitter<string>();
 
-  onCardClick(): void {
+  readonly showMenu = signal<boolean>(false);
+
+  toggleMenu(event: Event): void {
+    event.stopPropagation();
+    this.showMenu.set(!this.showMenu());
+  }
+
+  closeMenu(): void {
+    this.showMenu.set(false);
+  }
+
+  onEditClick(event: Event): void {
+    event.stopPropagation();
     this.edit.emit(this.task);
+    this.showMenu.set(false);
   }
 
   onDeleteClick(event: Event): void {
     event.stopPropagation();
     this.delete.emit(this.task.id);
+    this.showMenu.set(false);
   }
 }

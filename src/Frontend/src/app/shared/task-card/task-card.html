@@ -1,72 +1,83 @@
-<div
-  (click)="onCardClick()"
-  class="task-card group relative flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 pl-5 cursor-pointer overflow-hidden"
-  [class.task-card--done]="variant === 'done'"
-  [attr.data-priority]="task.priority">
-
-  <!-- Priority signal bar (left edge) -->
-  <span
-    class="absolute left-0 top-0 bottom-0 w-1.5"
-    [class.bg-accent]="task.priority === 'High'"
-    [class.bg-primary]="task.priority === 'Medium'"
-    [class.bg-foreground]="task.priority === 'Low'"
-    [class.opacity-25]="task.priority === 'Low'">
-  </span>
-
-  <!-- Eyebrow row: category label + delete affordance -->
-  <div class="flex items-start justify-between gap-3">
-    <span class="font-mono text-[9px] font-semibold uppercase tracking-[0.14em] text-foreground/45">
-      {{ task.category || 'General' }}
+<div 
+  class="task-card bg-card border border-border rounded-xl p-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:border-primary/45 dark:hover:border-primary/45 hover:shadow-lg transition-all duration-200 relative overflow-visible group flex flex-col gap-2.5">
+  
+  <div class="flex justify-between items-start gap-4">
+    <!-- Title -->
+    <span 
+      class="font-semibold text-xs leading-snug tracking-tight text-foreground/90 transition-colors group-hover:text-primary cursor-pointer select-none"
+      [class.line-through]="task.status === 'Done'"
+      [class.text-foreground/50]="task.status === 'Done'"
+      (click)="onEditClick($event)">
+      {{ task.title }}
     </span>
+    
+    <!-- Card Menu trigger -->
+    <div class="relative shrink-0 select-none">
+      <button 
+        (click)="toggleMenu($event)" 
+        class="text-foreground/35 hover:text-foreground cursor-pointer focus:outline-none p-0.5">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+        </svg>
+      </button>
 
-    <button
-      type="button"
-      (click)="onDeleteClick($event)"
-      title="Eliminar tarea"
-      class="shrink-0 -mt-1 -mr-1 rounded-full p-1 text-foreground/30 opacity-0 transition-all duration-150 hover:bg-accent/10 hover:text-accent focus:opacity-100 focus:outline-none group-hover:opacity-100 cursor-pointer">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor" class="h-3.5 w-3.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-      </svg>
-    </button>
+      <!-- Card Action Overlay menu -->
+      @if (showMenu()) {
+        <div class="absolute right-0 top-6 bg-card border border-border rounded-lg shadow-xl w-24 py-1 z-30 animate-[fadeIn_0.1s_ease-out]">
+          <button (click)="onEditClick($event)" class="w-full text-left px-3 py-1 hover:bg-background text-xs font-mono text-foreground cursor-pointer">Editar</button>
+          <button (click)="onDeleteClick($event)" class="w-full text-left px-3 py-1 hover:bg-background text-xs font-mono text-rose-500 cursor-pointer">Eliminar</button>
+        </div>
+      }
+    </div>
   </div>
-
-  <!-- Title -->
-  <h3
-    class="text-[13px] font-bold leading-snug tracking-tight transition-colors group-hover:text-primary"
-    [class]="variant === 'done' ? 'line-through text-foreground/55' : 'text-foreground/95'">
-    {{ task.title }}
-  </h3>
 
   <!-- Description -->
   @if (task.description) {
-    <p class="line-clamp-2 text-[11.5px] font-normal leading-relaxed text-foreground/50">
+    <p class="text-[11px] text-foreground/50 font-normal leading-relaxed line-clamp-3 select-text">
       {{ task.description }}
     </p>
   }
 
-  <!-- Footer: priority pill, due date, drag affordance -->
-  <div class="mt-1 flex items-center justify-between gap-2 border-t border-border/70 pt-2.5">
+  <!-- Badges footer -->
+  <div class="flex items-center justify-between gap-2 pt-1.5">
     <div class="flex flex-wrap items-center gap-1.5">
+      <!-- Display category cleanly -->
+      <span class="bg-primary text-white text-[9px] font-semibold px-2.5 py-0.5 rounded-full select-none tracking-tight">
+        {{ (task.category?.split(':')?.[0] || task.category) || 'General' }}
+      </span>
+      <!-- High Priority (Rose accent border and badge) -->
       @if (task.priority === 'High') {
-        <span class="rounded-full bg-accent px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-accent-foreground">
-          Alta
+        <span class="bg-accent text-white text-[9px] font-semibold px-2.5 py-0.5 rounded-full select-none tracking-tight">
+          High Priority
         </span>
       }
-      @if (task.dueDate) {
-        <span class="flex items-center gap-1 font-mono text-[9.5px] font-medium text-foreground/40">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="h-3 w-3">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-          </svg>
-          {{ task.dueDate | date:'d MMM' }}
-        </span>
-      }
+      <span class="bg-neutral-150 dark:bg-neutral-800 text-foreground/50 text-[9px] px-2 py-0.5 rounded-full select-none font-mono tracking-tight">
+        Sprint 8
+      </span>
+    </div>
+  </div>
+
+  <!-- Footer with date and avatars -->
+  <div class="flex items-center justify-between border-t border-border/50 pt-2.5 mt-0.5">
+    <!-- Overlapping Avatars -->
+    <div class="flex items-center -space-x-1.5 select-none">
+      <div class="w-4.5 h-4.5 rounded-full bg-primary text-white text-[7px] flex items-center justify-center font-bold border border-card shadow-sm">
+        JM
+      </div>
+      <div class="w-4.5 h-4.5 rounded-full bg-accent text-white text-[7px] flex items-center justify-center font-bold border border-card shadow-sm">
+        JM
+      </div>
     </div>
 
-    <!-- Drag affordance dots (visual hint: hold to drag) -->
-    <span class="drag-handle-hint flex items-center gap-[3px] text-foreground/25" title="Mantén pulsado para arrastrar">
-      <span class="h-1 w-1 rounded-full bg-current"></span>
-      <span class="h-1 w-1 rounded-full bg-current"></span>
-      <span class="h-1 w-1 rounded-full bg-current"></span>
-    </span>
+    <!-- Date -->
+    @if (task.dueDate) {
+      <span class="flex items-center gap-1 font-light text-[10px] text-foreground/40">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 text-foreground/35">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+        </svg>
+        {{ task.dueDate | date:'d MMM' }}
+      </span>
+    }
   </div>
+
 </div>

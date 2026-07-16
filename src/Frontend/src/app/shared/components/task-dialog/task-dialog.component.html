@@ -1,0 +1,131 @@
+@if (isOpen) {
+  <div class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-background border border-border w-full max-w-lg rounded-xl shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+      
+      <!-- Modal Header -->
+      <div class="px-6 py-4 border-b border-border/80 flex items-center justify-between bg-card/25">
+        <h3 class="font-bold text-xs tracking-wide font-mono uppercase text-foreground/80">
+          {{ task ? 'Editar Tarea' : 'Creación Manual de Tarea' }}
+        </h3>
+        <button (click)="onCloseClick()" class="text-foreground/45 hover:text-foreground p-1 cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 flex flex-col gap-5">
+        <!-- Title Input -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[10px] font-mono uppercase tracking-wider text-foreground/50 font-bold">Título de la Tarea *</label>
+          <input 
+            type="text" 
+            [ngModel]="modalTitle()" 
+            (ngModelChange)="modalTitle.set($event)"
+            placeholder="Escribe el título..."
+            class="w-full px-3 py-2 border rounded-lg bg-card text-foreground placeholder-foreground/35 focus:outline-none focus:ring-1 focus:ring-primary text-sm animate-none"
+            [class.border-rose-500]="formErrors['Title']"
+          />
+          @if (formErrors['Title']) {
+            <span class="text-[10px] text-rose-500 mt-1 font-mono font-light">{{ formErrors['Title']?.[0] }}</span>
+          }
+        </div>
+
+        <!-- Description Input -->
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[10px] font-mono uppercase tracking-wider text-foreground/50 font-bold">Descripción / Detalles</label>
+          <textarea 
+            [ngModel]="modalDescription()" 
+            (ngModelChange)="modalDescription.set($event)"
+            placeholder="Detalles adicionales..."
+            rows="3"
+            class="w-full px-3 py-2 border rounded-lg bg-card text-foreground placeholder-foreground/35 focus:outline-none focus:ring-1 focus:ring-primary text-sm resize-none"
+          ></textarea>
+        </div>
+
+        <!-- Grid columns: Date & Category -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Due Date -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[10px] font-mono uppercase tracking-wider text-foreground/50 font-bold">Fecha Límite</label>
+            <input 
+              type="datetime-local" 
+              [ngModel]="modalDueDate()" 
+              (ngModelChange)="modalDueDate.set($event)"
+              class="w-full px-3 py-2 border rounded-lg bg-card text-foreground focus:outline-none focus:ring-1 focus:ring-primary text-sm"
+              [class.border-rose-500]="formErrors['DueDate']"
+            />
+            @if (formErrors['DueDate']) {
+              <span class="text-[10px] text-rose-500 mt-1 font-mono font-light">{{ formErrors['DueDate']?.[0] }}</span>
+            }
+          </div>
+
+          <!-- Category -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[10px] font-mono uppercase tracking-wider text-foreground/50 font-bold">Tablero / Categoría</label>
+            <input 
+              type="text" 
+              [ngModel]="modalCategory()" 
+              (ngModelChange)="modalCategory.set($event)"
+              placeholder="ej: Trabajo, Reunión, Personal"
+              class="w-full px-3 py-2 border rounded-lg bg-card text-foreground placeholder-foreground/35 focus:outline-none focus:ring-1 focus:ring-primary text-sm"
+            />
+          </div>
+        </div>
+
+        <!-- Priority Selector -->
+        <div class="flex flex-col gap-2 pt-2">
+          <label class="text-[10px] font-mono uppercase tracking-wider text-foreground/50 font-bold">Prioridad</label>
+          <div class="grid grid-cols-3 gap-2">
+            <button 
+              type="button"
+              (click)="modalPriority.set('Low')"
+              class="px-3 py-2.5 text-xs font-mono border rounded-lg hover:bg-card transition-colors cursor-pointer focus:outline-none"
+              [class.bg-card]="modalPriority() === 'Low'"
+              [class.border-primary]="modalPriority() === 'Low'"
+              [class.text-primary]="modalPriority() === 'Low'">
+              BAJA
+            </button>
+            <button 
+              type="button"
+              (click)="modalPriority.set('Medium')"
+              class="px-3 py-2.5 text-xs font-mono border rounded-lg hover:bg-card transition-colors cursor-pointer focus:outline-none"
+              [class.bg-card]="modalPriority() === 'Medium'"
+              [class.border-primary]="modalPriority() === 'Medium'"
+              [class.text-primary]="modalPriority() === 'Medium'">
+              MEDIA
+            </button>
+            <button 
+              type="button"
+              (click)="modalPriority.set('High')"
+              class="px-3 py-2.5 text-xs font-mono border rounded-lg hover:bg-card transition-colors cursor-pointer focus:outline-none"
+              [class.bg-card]="modalPriority() === 'High'"
+              [class.border-accent]="modalPriority() === 'High'"
+              [class.text-accent]="modalPriority() === 'High'">
+              ALTA
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer Actions -->
+      <div class="px-6 py-4 border-t border-border/80 flex items-center justify-end gap-3 bg-card/25">
+        <button 
+          type="button" 
+          (click)="onCloseClick()" 
+          class="px-4 py-2 text-xs font-mono border border-border/80 hover:bg-card/50 rounded-lg cursor-pointer transition-colors focus:outline-none">
+          Cancelar
+        </button>
+        <button 
+          type="button" 
+          (click)="onSaveClick()" 
+          class="px-4 py-2 text-xs font-mono bg-primary text-white hover:bg-primary/95 rounded-lg cursor-pointer transition-colors focus:outline-none shadow-sm">
+          Guardar
+        </button>
+      </div>
+
+    </div>
+  </div>
+}
