@@ -1,0 +1,68 @@
+# =========================================================================
+# Master Gitignore - Smart Task Manager (Monorepo task/)
+# =========================================================================
+
+# OS / System Temp Files
+Thumbs.db
+db.files
+Desktop.ini
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDEs & Editor Configurations
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.swp
+*.swo
+.ntvs/
+*.njsproj
+*.sln.projusers
+
+# Backend (.NET 10 / EF Core)
+# Compilados y salidas de construcción
+**/bin/
+**/obj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+bld/
+
+# Archivos de configuración de usuario local
+*.csproj.user
+*.usersettings
+secrets.json
+
+# Evitar subir archivos temporales de publicación o restauración
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Frontend (Angular / Node.js)
+# Carpeta de dependencias
+**/node_modules/
+
+# Directorios de compilación de Angular
+**/dist/
+**/.angular/
+
+# Bitácoras de error de gestores de paquetes
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Reportes y capturas de pruebas
+/e2e/dist/
+/e2e/compile/
+/e2e/test-results/
+**/cypress/screenshots/
+**/cypress/videos/
+**/playwright-report/
+**/test-results/
