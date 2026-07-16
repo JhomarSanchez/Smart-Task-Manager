@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, effect, OnInit } from '@angular/core';
+import { Component, inject, signal, computed, effect, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DragDropModule, CdkDragDrop } from '@angular/cdk/drag-drop';
@@ -22,6 +22,10 @@ export class App implements OnInit {
   readonly showModal = signal<boolean>(false);
   readonly showSettingsModal = signal<boolean>(false);
   readonly editingTask = signal<TaskItem | null>(null);
+
+  // Dropdown states
+  readonly showBoardDropdown = signal<boolean>(false);
+  readonly activeCardMenuId = signal<string | null>(null);
 
   // Boards (Categories) State
   readonly activeBoard = signal<string>('General');
@@ -100,6 +104,27 @@ export class App implements OnInit {
     this.theme.set(this.theme() === 'light' ? 'dark' : 'light');
   }
 
+  // Intercept global clicks to close dropdown menus
+  @HostListener('document:click')
+  closeDropdowns(): void {
+    this.showBoardDropdown.set(false);
+    this.activeCardMenuId.set(null);
+  }
+
+  toggleBoardDropdown(event: Event): void {
+    event.stopPropagation();
+    this.showBoardDropdown.set(!this.showBoardDropdown());
+  }
+
+  toggleCardMenu(id: string, event: Event): void {
+    event.stopPropagation();
+    if (this.activeCardMenuId() === id) {
+      this.activeCardMenuId.set(null);
+    } else {
+      this.activeCardMenuId.set(id);
+    }
+  }
+
   // Board management
   createNewBoard(): void {
     const name = prompt('Escribe el nombre del nuevo tablero:');
@@ -114,6 +139,7 @@ export class App implements OnInit {
 
   selectBoard(board: string): void {
     this.activeBoard.set(board);
+    this.showBoardDropdown.set(false);
   }
 
   // AI settings modal helpers
@@ -207,7 +233,6 @@ export class App implements OnInit {
         };
         const created = await this.taskService.createTask(dto);
         if (created && created.category) {
-          // If created task has a different category, switch to that board
           this.activeBoard.set(created.category);
         }
       }
@@ -252,7 +277,6 @@ export class App implements OnInit {
         }
         this.rawInput.set('');
       } else {
-        // Fallback: Open manual modal pre-filled with the title
         this.openCreateModal(parsed.title);
       }
     } catch (err) {

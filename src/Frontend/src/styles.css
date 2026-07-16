@@ -1,5 +1,4 @@
-/* You can add global styles to this file, and also import other style files */
-
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import 'tailwindcss';
 
 @theme {
@@ -13,30 +12,30 @@
 }
 
 :root {
-  --background: hsl(0, 0%, 100%);
-  --foreground: hsl(0, 0%, 7%);
-  --card: hsl(0, 0%, 98%);
-  --card-foreground: hsl(0, 0%, 7%);
-  --border: hsl(240, 5.9%, 90%);
-  --primary: hsl(221.2, 83.2%, 53.3%);
-  --accent: hsl(342.7, 91.8%, 47.8%);
+  --background: #FAFAFA;
+  --foreground: #09090B;
+  --card: #FFFFFF;
+  --card-foreground: #09090B;
+  --border: #E4E4E7;
+  --primary: #0066FF;
+  --accent: #F43F5E;
 }
 
 .dark {
-  --background: hsl(0, 0%, 0%);
-  --foreground: hsl(240, 5.9%, 90%);
-  --card: hsl(240, 10%, 3.9%);
-  --card-foreground: hsl(240, 5.9%, 90%);
-  --border: hsl(240, 3.7%, 15.9%);
-  --primary: hsl(217.2, 91.2%, 59.8%);
-  --accent: hsl(350.5, 89.1%, 60.2%);
+  --background: #000000;
+  --foreground: #E4E4E7;
+  --card: #18181B;
+  --card-foreground: #E4E4E7;
+  --border: #27272A;
+  --primary: #0066FF;
+  --accent: #F43F5E;
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   margin: 0;
   padding: 0;
 }

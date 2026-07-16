@@ -1,442 +1,514 @@
-<div class="min-h-screen bg-background text-foreground transition-colors duration-250 flex flex-col font-sans">
+<div class="min-h-screen bg-background text-foreground transition-colors duration-200 flex flex-col font-sans select-none">
   
-  <!-- Header Bar -->
-  <header class="border-b border-border/80 sticky top-0 bg-background/95 backdrop-blur-md z-40">
-    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-mono font-bold text-lg select-none shadow-sm">
-          S
-        </div>
-        <div class="flex items-baseline gap-1 select-none">
-          <span class="font-mono font-black tracking-tight text-lg">SMART TASK</span>
-          <span class="text-[10px] font-mono tracking-widest text-primary font-bold">WORKSPACE</span>
-        </div>
-      </div>
+  <!-- Main Header Bar -->
+  <header class="border-b border-border h-14 px-6 flex items-center justify-between bg-card/10 backdrop-blur-sm z-40">
+    <!-- Left Logo -->
+    <div class="flex items-center gap-2 select-none shrink-0">
+      <span class="font-sans font-extrabold tracking-wider text-xs uppercase text-foreground/90 app-logo">Smart Task Manager</span>
+    </div>
 
-      <!-- Controls -->
-      <div class="flex items-center gap-2">
-        <!-- AI Settings Gear -->
-        <button 
-          (click)="openSettingsModal()" 
-          class="w-10 h-10 rounded-lg border border-border hover:bg-card/50 flex items-center justify-center cursor-pointer transition-all duration-200 focus:outline-none"
-          title="Configuración de IA">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-foreground/70 hover:text-primary">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.43l-1.003.828c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827a1.125 1.125 0 0 1 .26 1.43l-1.297 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.43l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+    <!-- Center Smart NLP Input -->
+    <div class="flex-grow max-w-lg mx-6 relative">
+      <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-foreground/35">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5 transition-colors" [class.text-accent]="isParsing()">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+      </span>
+
+      <input 
+        type="text" 
+        [ngModel]="rawInput()" 
+        (ngModelChange)="rawInput.set($event)"
+        (keydown.enter)="handleSmartInput()"
+        placeholder="Create new task or project..."
+        class="w-full pl-9 pr-10 py-1.5 bg-card border border-border text-xs rounded-full font-light text-foreground placeholder-foreground/35 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all duration-300 shadow-sm"
+        [class.border-accent]="isParsing()"
+        [class.animate-pulse]="isParsing()"
+        [disabled]="isParsing()"
+      />
+
+      <!-- Clear action inside input -->
+      @if (rawInput()) {
+        <button (click)="rawInput.set('')" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-foreground/40 hover:text-foreground cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
           </svg>
         </button>
+      }
+    </div>
 
-        <!-- Theme Toggle -->
-        <button 
-          (click)="toggleTheme()" 
-          class="w-10 h-10 rounded-lg border border-border hover:bg-card/50 flex items-center justify-center cursor-pointer transition-all duration-200 focus:outline-none"
-          title="Cambiar tema">
-          @if (theme() === 'dark') {
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-amber-400">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m0 13.5V21M5.22 5.22l1.58 1.58m9.75 9.75l1.58 1.58M3 12h2.25m13.5 0H21M5.22 18.78l1.58-1.58m9.75-9.75l1.58-1.58M12 7.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9Z" />
-            </svg>
-          } @else {
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-indigo-600">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
-            </svg>
-          }
-        </button>
+    <!-- Right Header items -->
+    <div class="flex items-center gap-4 text-xs font-light text-foreground/60 shrink-0">
+      <!-- Search Button -->
+      <button class="flex items-center gap-1.5 hover:text-foreground cursor-pointer focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.602 10.602Z" />
+        </svg>
+        <span>Search</span>
+      </button>
+
+      <!-- Notifications -->
+      <button class="flex items-center gap-1.5 hover:text-foreground cursor-pointer focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+        </svg>
+        <span>Notifications</span>
+      </button>
+
+      <!-- AI Settings Gear -->
+      <button (click)="openSettingsModal()" class="hover:text-foreground cursor-pointer focus:outline-none" title="Ajustes de IA">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.43l-1.003.828c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827a1.125 1.125 0 0 1 .26 1.43l-1.297 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.43l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+        </svg>
+      </button>
+
+      <!-- Theme Switcher -->
+      <button (click)="toggleTheme()" class="hover:text-foreground cursor-pointer focus:outline-none" title="Cambiar tema">
+        @if (theme() === 'dark') {
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-amber-400">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m0 13.5V21M5.22 5.22l1.58 1.58m9.75 9.75l1.58 1.58M3 12h2.25m13.5 0H21M5.22 18.78l1.58-1.58m9.75-9.75l1.58-1.58M12 7.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9Z" />
+          </svg>
+        } @else {
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-indigo-600">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z" />
+          </svg>
+        }
+      </button>
+
+      <!-- Profile Avatar -->
+      <div class="w-6 h-6 rounded-full border border-border bg-card text-foreground flex items-center justify-center font-bold text-[9px] select-none shadow-sm">
+        JM
       </div>
     </div>
   </header>
 
-  <!-- Sidebar & Kanban Layout Container -->
-  <div class="flex-grow max-w-7xl w-full mx-auto px-4 py-8 md:py-10 flex flex-col md:flex-row gap-8">
-    
-    <!-- Sidebar - Workspace Board selector -->
-    <aside class="w-full md:w-60 shrink-0 flex flex-col gap-6">
-      <div class="border border-border/80 rounded-xl p-4 bg-card/25">
-        <div class="flex items-center justify-between pb-3 mb-4 border-b border-border/60">
-          <span class="text-[10px] font-mono tracking-widest text-foreground/40 uppercase">Tableros</span>
-          <button 
-            (click)="createNewBoard()" 
-            class="text-xs text-primary font-mono font-bold hover:underline focus:outline-none cursor-pointer"
-            title="Crear nuevo tablero">
-            + CREAR
-          </button>
-        </div>
-
-        <ul class="flex flex-row md:flex-col gap-1.5 overflow-x-auto md:overflow-x-visible pb-2 md:pb-0 select-none scrollbar-thin">
-          @for (board of boards(); track board) {
-            <li class="shrink-0 md:shrink-1">
-              <button 
-                (click)="selectBoard(board)"
-                class="w-full text-left px-3 py-2 rounded-lg text-xs font-mono transition-all duration-150 border focus:outline-none cursor-pointer flex items-center justify-between"
-                [class.bg-primary]="activeBoard() === board"
-                [class.text-white]="activeBoard() === board"
-                [class.border-primary]="activeBoard() === board"
-                [class.bg-transparent]="activeBoard() !== board"
-                [class.text-foreground/70]="activeBoard() !== board"
-                [class.border-transparent]="activeBoard() !== board"
-                [class.hover:bg-card/40]="activeBoard() !== board"
-                [class.hover:text-foreground]="activeBoard() !== board">
-                <span>{{ board }}</span>
-                @if (activeBoard() === board) {
-                  <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
-                }
-              </button>
-            </li>
-          }
-        </ul>
-      </div>
-
-      <!-- Quick Tips -->
-      <div class="hidden md:flex flex-col gap-2 p-4 border border-border/60 rounded-xl bg-card/10 text-[11px] text-foreground/50 leading-relaxed font-light">
-        <span class="font-mono text-[9px] uppercase tracking-wider text-foreground/40 font-bold mb-1">Guía Rápida</span>
-        <p>1. Crea tableros personalizados arriba para organizar proyectos.</p>
-        <p>2. Arrastra tarjetas entre columnas para actualizar su progreso.</p>
-        <p>3. Conecta tu API Key de Gemini o OpenAI en el engranaje superior para habilitar la entrada natural de tareas.</p>
-      </div>
-    </aside>
-
-    <!-- Main Kanban Dashboard Board -->
-    <div class="flex-grow flex flex-col gap-8">
+  <!-- Sub-header selector and tabs -->
+  <section class="border-b border-border h-12 px-6 flex items-center justify-between bg-card/5 select-none relative">
+    <div class="flex items-center gap-6">
       
-      <!-- Smart Input Panel -->
-      <div class="w-full flex flex-col gap-2.5">
-        <div class="relative w-full">
-          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-foreground/40">
-            <!-- Sparkles -->
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-colors" [class.text-accent]="isParsing()">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904 9 21l-.813-5.096L3 15l5.096-.813L9 9l.813 5.096L15 15l-5.187.904ZM18.097 9.586 17.25 14l-.847-4.414L12 9l4.403-.847L17.25 4.5l.847 4.403L22.5 9l-4.403.856Z" />
-            </svg>
-          </div>
+      <!-- Project Dropdown Trigger -->
+      <div 
+        (click)="toggleBoardDropdown($event)"
+        class="flex items-center gap-2 cursor-pointer font-semibold text-sm hover:text-foreground/80 relative">
+        <span class="w-2.5 h-2.5 rounded bg-primary shrink-0 block"></span>
+        <span class="tracking-tight text-xs font-semibold">{{ activeBoard() }}</span>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3 h-3 text-foreground/45">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+        </svg>
 
-          <input 
-            type="text" 
-            [ngModel]="rawInput()" 
-            (ngModelChange)="rawInput.set($event)"
-            (keydown.enter)="handleSmartInput()"
-            placeholder="Añadir tarea inteligente (ej: reunión urgente mañana a las 3pm)..."
-            class="w-full pl-12 pr-24 py-4 bg-card border text-foreground placeholder-foreground/35 rounded-xl font-sans focus:outline-none focus:ring-1 focus:ring-accent transition-all duration-300 shadow-sm"
-            [class.border-accent]="isParsing()"
-            [class.animate-pulse]="isParsing()"
-            [disabled]="isParsing()"
-          />
-
-          <div class="absolute inset-y-0 right-0 pr-3 flex items-center gap-2">
-            @if (rawInput()) {
-              <button (click)="rawInput.set('')" class="text-foreground/45 hover:text-foreground p-1 cursor-pointer">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                </svg>
-              </button>
-            }
-            <span class="hidden md:inline font-mono text-[9px] text-foreground/30 border border-border/80 px-2 py-1 rounded bg-background/50">
-              ENTER
-            </span>
+        <!-- Boards Dropdown overlay menu -->
+        @if (showBoardDropdown()) {
+          <div class="absolute top-8 left-0 bg-card border border-border rounded-xl shadow-xl w-60 p-1.5 z-50 animate-[fadeIn_0.15s_ease-out]">
+            <div class="px-2.5 py-1.5 text-[9px] font-mono tracking-wider text-foreground/40 uppercase border-b border-border mb-1">
+              My Boards
+            </div>
+            <ul class="flex flex-col gap-0.5">
+              @for (board of boards(); track board) {
+                <li>
+                  <button 
+                    (click)="selectBoard(board)"
+                    class="w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-mono transition-colors flex items-center justify-between hover:bg-background cursor-pointer focus:outline-none"
+                    [class.text-primary]="activeBoard() === board"
+                    [class.font-bold]="activeBoard() === board">
+                    <span>{{ board }}</span>
+                    @if (activeBoard() === board) {
+                      <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                    }
+                  </button>
+                </li>
+              }
+              <li class="border-t border-border mt-1 pt-1">
+                <button 
+                  (click)="createNewBoard()"
+                  class="w-full text-left px-2.5 py-1.5 rounded-lg text-xs font-mono text-primary font-bold hover:bg-background cursor-pointer focus:outline-none">
+                  + Create new board
+                </button>
+              </li>
+            </ul>
           </div>
-        </div>
-
-        <!-- Meta status row -->
-        <div class="flex items-center justify-between w-full px-2">
-          <div class="flex items-center gap-2 text-[10px] text-foreground/45 font-mono">
-            @if (isParsing()) {
-              <span class="flex items-center gap-1.5 text-accent animate-pulse">
-                <span class="w-1.5 h-1.5 rounded-full bg-accent animate-ping"></span>
-                PROCESANDO POR IA...
-              </span>
-            } @else {
-              <span>Tablero Activo: <b class="text-primary font-bold">{{ activeBoard() }}</b></span>
-            }
-          </div>
-          <button 
-            (click)="openCreateModal('')"
-            class="flex items-center gap-1 text-[11px] text-primary font-bold hover:underline cursor-pointer focus:outline-none">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor" class="w-3 h-3">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-            </svg>
-            Creación Manual
-          </button>
-        </div>
+        }
       </div>
 
-      <!-- Error State -->
-      @if (taskService.error()) {
-        <div class="bg-rose-500/10 border border-rose-500/30 text-rose-500 px-4 py-3 rounded-lg text-xs flex items-center justify-between">
-          <span>{{ taskService.error() }}</span>
-          <button (click)="taskService.error.set(null)" class="text-rose-500/70 hover:text-rose-500 cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-      }
+      <!-- Navigation Tabs (mockup style) -->
+      <nav class="flex items-center gap-5 text-xs text-foreground/50 ml-6 border-l border-border pl-6 h-6">
+        <button class="relative font-medium text-foreground py-3 focus:outline-none cursor-pointer">
+          Board
+          <!-- Active underline blue strip -->
+          <span class="absolute bottom-[-13px] left-0 right-0 h-0.5 bg-primary rounded-full"></span>
+        </button>
+        <button class="hover:text-foreground transition-colors py-3 focus:outline-none cursor-pointer">List</button>
+        <button class="hover:text-foreground transition-colors py-3 focus:outline-none cursor-pointer">Timeline</button>
+        <button class="hover:text-foreground transition-colors py-3 focus:outline-none cursor-pointer">Files</button>
+      </nav>
+    </div>
 
-      <!-- Kanban Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-grow items-start">
-        
-        <!-- Column To Do -->
-        <div class="flex flex-col gap-3 h-full">
-          <div class="flex items-center justify-between px-2 py-1.5 border-t-2 border-slate-400 dark:border-slate-800">
-            <div class="flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-              <h2 class="font-bold text-xs tracking-wide font-mono uppercase">Por Hacer</h2>
-            </div>
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-card border border-border/80 text-foreground/50">
+    <!-- Right layout buttons -->
+    <div class="flex items-center gap-3 text-foreground/40">
+      <button class="hover:text-foreground cursor-pointer focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6A2.25 2.25 0 0 1 3.75 18v-2.25ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25A2.25 2.25 0 0 1 13.5 8.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
+        </svg>
+      </button>
+      <button class="hover:text-foreground cursor-pointer focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- Error State Alert Banner -->
+  @if (taskService.error()) {
+    <div class="max-w-7xl w-full mx-auto px-8 mt-6">
+      <div class="bg-rose-500/10 border border-rose-500/30 text-rose-500 px-4 py-3 rounded-lg text-xs flex items-center justify-between shadow-sm">
+        <span>{{ taskService.error() }}</span>
+        <button (click)="taskService.error.set(null)" class="text-rose-500/70 hover:text-rose-500 cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- Main Kanban Board Canvas -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-8 py-8 flex flex-col gap-6 overflow-x-auto">
+    <div class="flex flex-row gap-6 items-start flex-grow">
+      
+      <!-- TO DO COLUMN -->
+      <div class="w-80 shrink-0 flex flex-col gap-4">
+        <!-- Column Header -->
+        <div class="flex items-center justify-between px-1 select-none">
+          <div class="flex items-center gap-2">
+            <h2 class="font-bold text-sm tracking-tight text-foreground/90">To Do</h2>
+            <span class="bg-neutral-200/60 dark:bg-neutral-800 text-foreground/50 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold">
               {{ todoTasks().length }}
             </span>
           </div>
+          <button (click)="openCreateModal('')" class="text-foreground/45 hover:text-foreground cursor-pointer focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+            </svg>
+          </button>
+        </div>
 
-          <div 
-            id="todoList"
-            cdkDropList
-            [cdkDropListData]="todoTasks()"
-            [cdkDropListConnectedTo]="['doingList', 'doneList']"
-            (cdkDropListDropped)="onCardDropped($event, 'Todo')"
-            class="flex flex-col gap-4 p-2 min-h-[500px] bg-card/15 rounded-xl border border-border/40 transition-colors duration-200">
-            
-            @for (task of todoTasks(); track task.id) {
-              <div 
-                [cdkDragData]="task" 
-                cdkDrag 
-                class="bg-card border border-border rounded-xl p-5 shadow-sm hover:border-primary/50 cursor-grab active:cursor-grabbing transition-all duration-200 relative group overflow-hidden">
+        <!-- Drop List container -->
+        <div 
+          id="todoList"
+          cdkDropList
+          [cdkDropListData]="todoTasks()"
+          [cdkDropListConnectedTo]="['doingList', 'doneList']"
+          (cdkDropListDropped)="onCardDropped($event, 'Todo')"
+          class="flex flex-col gap-3 min-h-[500px]">
+          
+          @for (task of todoTasks(); track task.id) {
+            <!-- Card -->
+            <div 
+              [cdkDragData]="task" 
+              cdkDrag 
+              class="bg-card border border-border rounded-xl p-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:border-primary/40 hover:shadow-md cursor-grab active:cursor-grabbing transition-all duration-200 relative overflow-visible group flex flex-col gap-2.5">
+              
+              <div class="flex justify-between items-start gap-4">
+                <span class="font-semibold text-xs leading-snug tracking-tight text-foreground/90 transition-colors group-hover:text-primary">
+                  {{ task.title }}
+                </span>
                 
-                @if (task.priority === 'High') {
-                  <div class="absolute left-0 top-0 bottom-0 w-1 bg-accent"></div>
-                }
+                <!-- Card Menu trigger -->
+                <div class="relative shrink-0 select-none">
+                  <button 
+                    (click)="toggleCardMenu(task.id, $event)" 
+                    class="text-foreground/35 hover:text-foreground cursor-pointer focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                    </svg>
+                  </button>
 
-                <div class="flex justify-between items-start gap-4">
-                  <h3 class="font-semibold text-sm leading-tight text-foreground/90 tracking-tight transition-colors group-hover:text-primary">
-                    {{ task.title }}
-                  </h3>
-                  
-                  <div class="opacity-0 group-hover:opacity-100 flex items-center gap-1.5 transition-opacity duration-150 shrink-0">
-                    <button (click)="openEditModal(task)" class="text-foreground/45 hover:text-primary p-1 rounded hover:bg-background/80 cursor-pointer">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-                      </svg>
-                    </button>
-                    <button (click)="deleteTask(task.id)" class="text-foreground/45 hover:text-accent p-1 rounded hover:bg-background/80 cursor-pointer">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9 9m9.768-1.562-1.077 19.006A2.25 2.25 0 0 1 15.75 21H8.25a2.25 2.25 0 0 1-2.244-2.077L4.772 7.438m13.084 0A2.25 2.25 0 0 0 15.3 4.5H8.7a2.25 2.25 0 0 0-2.247 2.118L4.75 7.438M9 3.5h6" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-
-                @if (task.description) {
-                  <p class="text-xs text-foreground/60 font-light mt-2 line-clamp-3 leading-relaxed">
-                    {{ task.description }}
-                  </p>
-                }
-
-                <div class="flex flex-wrap items-center justify-between gap-2 mt-4 pt-3 border-t border-border/40 text-[10px] text-foreground/50">
-                  <div class="flex items-center gap-1.5">
-                    <span class="font-mono bg-card px-2 py-0.5 rounded border border-border/80 text-[9px] uppercase tracking-wider text-primary">
-                      [{{ task.category || 'General' }}]
-                    </span>
-                    @if (task.priority === 'High') {
-                      <span class="text-accent font-mono font-bold tracking-widest uppercase">ALTA</span>
-                    } @else if (task.priority === 'Low') {
-                      <span class="text-foreground/35 font-mono uppercase">BAJA</span>
-                    }
-                  </div>
-
-                  @if (task.dueDate) {
-                    <span class="flex items-center gap-1 font-light text-foreground/45">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3 text-slate-400">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
-                      </svg>
-                      {{ task.dueDate | date:'d MMM, HH:mm' }}
-                    </span>
+                  <!-- Card Action Overlay menu -->
+                  @if (activeCardMenuId() === task.id) {
+                    <div class="absolute right-0 top-6 bg-card border border-border rounded-lg shadow-xl w-24 py-1 z-50 animate-[fadeIn_0.1s_ease-out]">
+                      <button (click)="openEditModal(task)" class="w-full text-left px-3 py-1 hover:bg-background text-xs font-mono text-foreground cursor-pointer">Editar</button>
+                      <button (click)="deleteTask(task.id)" class="w-full text-left px-3 py-1 hover:bg-background text-xs font-mono text-rose-500 cursor-pointer">Eliminar</button>
+                    </div>
                   }
                 </div>
               </div>
-            } @empty {
-              <div class="flex-grow flex flex-col items-center justify-center text-center p-8 border border-dashed border-border/50 rounded-xl text-foreground/35 text-[11px] font-mono select-none">
-                Sin tareas.
-              </div>
-            }
-          </div>
-        </div>
 
-        <!-- Column Doing -->
-        <div class="flex flex-col gap-3 h-full">
-          <div class="flex items-center justify-between px-2 py-1.5 border-t-2 border-primary">
-            <div class="flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
-              <h2 class="font-bold text-xs tracking-wide font-mono uppercase">En Progreso</h2>
+              @if (task.description) {
+                <p class="text-[11px] text-foreground/50 font-normal leading-relaxed line-clamp-3">
+                  {{ task.description }}
+                </p>
+              }
+
+              <!-- Badges footer -->
+              <div class="flex items-center justify-between gap-2 pt-1.5">
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="bg-primary text-white text-[9px] font-medium px-2 py-0.5 rounded-full select-none tracking-tight">
+                    {{ task.category || 'General' }}
+                  </span>
+                  @if (task.priority === 'High') {
+                    <span class="bg-accent text-white text-[9px] font-medium px-2 py-0.5 rounded-full select-none tracking-tight">
+                      High Priority
+                    </span>
+                  }
+                  <span class="bg-neutral-100 dark:bg-neutral-800 text-foreground/50 text-[9px] px-2 py-0.5 rounded-full select-none font-mono tracking-tight">
+                    Sprint 8
+                  </span>
+                </div>
+              </div>
+
+              <!-- Footer with date and avatars -->
+              <div class="flex items-center justify-between border-t border-border/50 pt-2.5 mt-0.5">
+                <!-- Overlapping Avatars -->
+                <div class="flex items-center -space-x-1.5 select-none">
+                  <div class="w-4.5 h-4.5 rounded-full bg-primary text-white text-[7px] flex items-center justify-center font-bold border border-card shadow-sm">
+                    JM
+                  </div>
+                  <div class="w-4.5 h-4.5 rounded-full bg-accent text-white text-[7px] flex items-center justify-center font-bold border border-card shadow-sm">
+                    JM
+                  </div>
+                </div>
+
+                <!-- Date -->
+                @if (task.dueDate) {
+                  <span class="flex items-center gap-1 font-light text-[10px] text-foreground/40">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 text-foreground/35">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                    </svg>
+                    {{ task.dueDate | date:'d MMM' }}
+                  </span>
+                }
+              </div>
+
             </div>
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-card border border-border/80 text-foreground/50">
+          } @empty {
+            <div class="flex-grow flex flex-col items-center justify-center text-center p-8 border border-dashed border-border/60 rounded-xl text-foreground/25 text-[10px] font-mono select-none">
+              No tasks
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- DOING COLUMN -->
+      <div class="w-80 shrink-0 flex flex-col gap-4">
+        <!-- Column Header -->
+        <div class="flex items-center justify-between px-1 select-none">
+          <div class="flex items-center gap-2">
+            <h2 class="font-bold text-sm tracking-tight text-foreground/90">Doing</h2>
+            <span class="bg-neutral-200/60 dark:bg-neutral-800 text-foreground/50 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold">
               {{ doingTasks().length }}
             </span>
           </div>
+          <button (click)="openCreateModal('')" class="text-foreground/45 hover:text-foreground cursor-pointer focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+            </svg>
+          </button>
+        </div>
 
-          <div 
-            id="doingList"
-            cdkDropList
-            [cdkDropListData]="doingTasks()"
-            [cdkDropListConnectedTo]="['todoList', 'doneList']"
-            (cdkDropListDropped)="onCardDropped($event, 'Doing')"
-            class="flex flex-col gap-4 p-2 min-h-[500px] bg-card/15 rounded-xl border border-border/40 transition-colors duration-200">
-            
-            @for (task of doingTasks(); track task.id) {
-              <div 
-                [cdkDragData]="task" 
-                cdkDrag 
-                class="bg-card border border-border rounded-xl p-5 shadow-sm hover:border-primary/50 cursor-grab active:cursor-grabbing transition-all duration-200 relative group overflow-hidden">
+        <div 
+          id="doingList"
+          cdkDropList
+          [cdkDropListData]="doingTasks()"
+          [cdkDropListConnectedTo]="['todoList', 'doneList']"
+          (cdkDropListDropped)="onCardDropped($event, 'Doing')"
+          class="flex flex-col gap-3 min-h-[500px]">
+          
+          @for (task of doingTasks(); track task.id) {
+            <div 
+              [cdkDragData]="task" 
+              cdkDrag 
+              class="bg-card border border-border rounded-xl p-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:border-primary/40 hover:shadow-md cursor-grab active:cursor-grabbing transition-all duration-200 relative overflow-visible group flex flex-col gap-2.5">
+              
+              @if (task.priority === 'High') {
+                <div class="absolute left-0 top-0 bottom-0 w-1 bg-accent"></div>
+              }
+
+              <div class="flex justify-between items-start gap-4">
+                <span class="font-semibold text-xs leading-snug tracking-tight text-foreground/90 transition-colors group-hover:text-primary">
+                  {{ task.title }}
+                </span>
                 
-                @if (task.priority === 'High') {
-                  <div class="absolute left-0 top-0 bottom-0 w-1 bg-accent"></div>
-                }
+                <div class="relative shrink-0 select-none">
+                  <button 
+                    (click)="toggleCardMenu(task.id, $event)" 
+                    class="text-foreground/35 hover:text-foreground cursor-pointer focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                    </svg>
+                  </button>
 
-                <div class="flex justify-between items-start gap-4">
-                  <h3 class="font-semibold text-sm leading-tight text-foreground/90 tracking-tight transition-colors group-hover:text-primary">
-                    {{ task.title }}
-                  </h3>
-                  
-                  <div class="opacity-0 group-hover:opacity-100 flex items-center gap-1.5 transition-opacity duration-150 shrink-0">
-                    <button (click)="openEditModal(task)" class="text-foreground/45 hover:text-primary p-1 rounded hover:bg-background/80 cursor-pointer">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-                      </svg>
-                    </button>
-                    <button (click)="deleteTask(task.id)" class="text-foreground/45 hover:text-accent p-1 rounded hover:bg-background/80 cursor-pointer">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9 9m9.768-1.562-1.077 19.006A2.25 2.25 0 0 1 15.75 21H8.25a2.25 2.25 0 0 1-2.244-2.077L4.772 7.438m13.084 0A2.25 2.25 0 0 0 15.3 4.5H8.7a2.25 2.25 0 0 0-2.247 2.118L4.75 7.438M9 3.5h6" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-
-                @if (task.description) {
-                  <p class="text-xs text-foreground/60 font-light mt-2 line-clamp-3 leading-relaxed">
-                    {{ task.description }}
-                  </p>
-                }
-
-                <div class="flex flex-wrap items-center justify-between gap-2 mt-4 pt-3 border-t border-border/40 text-[10px] text-foreground/50">
-                  <div class="flex items-center gap-1.5">
-                    <span class="font-mono bg-card px-2 py-0.5 rounded border border-border/80 text-[9px] uppercase tracking-wider text-primary">
-                      [{{ task.category || 'General' }}]
-                    </span>
-                    @if (task.priority === 'High') {
-                      <span class="text-accent font-mono font-bold tracking-widest uppercase">ALTA</span>
-                    } @else if (task.priority === 'Low') {
-                      <span class="text-foreground/35 font-mono uppercase">BAJA</span>
-                    }
-                  </div>
-
-                  @if (task.dueDate) {
-                    <span class="flex items-center gap-1 font-light text-foreground/45">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3 text-slate-400">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
-                      </svg>
-                      {{ task.dueDate | date:'d MMM, HH:mm' }}
-                    </span>
+                  @if (activeCardMenuId() === task.id) {
+                    <div class="absolute right-0 top-6 bg-card border border-border rounded-lg shadow-xl w-24 py-1 z-50 animate-[fadeIn_0.1s_ease-out]">
+                      <button (click)="openEditModal(task)" class="w-full text-left px-3 py-1 hover:bg-background text-xs font-mono text-foreground cursor-pointer">Editar</button>
+                      <button (click)="deleteTask(task.id)" class="w-full text-left px-3 py-1 hover:bg-background text-xs font-mono text-rose-500 cursor-pointer">Eliminar</button>
+                    </div>
                   }
                 </div>
               </div>
-            } @empty {
-              <div class="flex-grow flex flex-col items-center justify-center text-center p-8 border border-dashed border-border/50 rounded-xl text-foreground/35 text-[11px] font-mono select-none">
-                Sin tareas.
-              </div>
-            }
-          </div>
-        </div>
 
-        <!-- Column Done -->
-        <div class="flex flex-col gap-3 h-full">
-          <div class="flex items-center justify-between px-2 py-1.5 border-t-2 border-emerald-550">
-            <div class="flex items-center gap-2">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-              <h2 class="font-bold text-xs tracking-wide font-mono uppercase">Completado</h2>
+              @if (task.description) {
+                <p class="text-[11px] text-foreground/50 font-normal leading-relaxed line-clamp-3">
+                  {{ task.description }}
+                </p>
+              }
+
+              <div class="flex items-center justify-between gap-2 pt-1.5">
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="bg-primary text-white text-[9px] font-medium px-2 py-0.5 rounded-full select-none tracking-tight">
+                    {{ task.category || 'General' }}
+                  </span>
+                  @if (task.priority === 'High') {
+                    <span class="bg-accent text-white text-[9px] font-medium px-2 py-0.5 rounded-full select-none tracking-tight">
+                      High Priority
+                    </span>
+                  }
+                  <span class="bg-neutral-100 dark:bg-neutral-800 text-foreground/50 text-[9px] px-2 py-0.5 rounded-full select-none font-mono tracking-tight">
+                    Sprint 8
+                  </span>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between border-t border-border/50 pt-2.5 mt-0.5">
+                <div class="flex items-center -space-x-1.5 select-none">
+                  <div class="w-4.5 h-4.5 rounded-full bg-primary text-white text-[7px] flex items-center justify-center font-bold border border-card shadow-sm">
+                    JM
+                  </div>
+                  <div class="w-4.5 h-4.5 rounded-full bg-accent text-white text-[7px] flex items-center justify-center font-bold border border-card shadow-sm">
+                    JM
+                  </div>
+                </div>
+
+                @if (task.dueDate) {
+                  <span class="flex items-center gap-1 font-light text-[10px] text-foreground/40">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 text-foreground/35">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                    </svg>
+                    {{ task.dueDate | date:'d MMM' }}
+                  </span>
+                }
+              </div>
+
             </div>
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-card border border-border/80 text-foreground/50">
+          } @empty {
+            <div class="flex-grow flex flex-col items-center justify-center text-center p-8 border border-dashed border-border/60 rounded-xl text-foreground/25 text-[10px] font-mono select-none">
+              No tasks
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- DONE COLUMN -->
+      <div class="w-80 shrink-0 flex flex-col gap-4">
+        <!-- Column Header -->
+        <div class="flex items-center justify-between px-1 select-none">
+          <div class="flex items-center gap-2">
+            <h2 class="font-bold text-sm tracking-tight text-foreground/90">Done</h2>
+            <span class="bg-neutral-200/60 dark:bg-neutral-800 text-foreground/50 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold">
               {{ doneTasks().length }}
             </span>
           </div>
+          <button (click)="openCreateModal('')" class="text-foreground/45 hover:text-foreground cursor-pointer focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+            </svg>
+          </button>
+        </div>
 
-          <div 
-            id="doneList"
-            cdkDropList
-            [cdkDropListData]="doneTasks()"
-            [cdkDropListConnectedTo]="['todoList', 'doingList']"
-            (cdkDropListDropped)="onCardDropped($event, 'Done')"
-            class="flex flex-col gap-4 p-2 min-h-[500px] bg-card/15 rounded-xl border border-border/40 transition-colors duration-200">
-            
-            @for (task of doneTasks(); track task.id) {
-              <div 
-                [cdkDragData]="task" 
-                cdkDrag 
-                class="bg-card border border-border rounded-xl p-5 shadow-sm hover:border-primary/50 cursor-grab active:cursor-grabbing transition-all duration-200 relative group overflow-hidden opacity-75 hover:opacity-100">
+        <div 
+          id="doneList"
+          cdkDropList
+          [cdkDropListData]="doneTasks()"
+          [cdkDropListConnectedTo]="['todoList', 'doingList']"
+          (cdkDropListDropped)="onCardDropped($event, 'Done')"
+          class="flex flex-col gap-3 min-h-[500px]">
+          
+          @for (task of doneTasks(); track task.id) {
+            <div 
+              [cdkDragData]="task" 
+              cdkDrag 
+              class="bg-card border border-border rounded-xl p-4 shadow-[0_1px_3px_rgba(0,0,0,0.02)] hover:border-primary/40 hover:shadow-md cursor-grab active:cursor-grabbing transition-all duration-200 relative overflow-visible group flex flex-col gap-2.5 opacity-80 hover:opacity-100">
+              
+              @if (task.priority === 'High') {
+                <div class="absolute left-0 top-0 bottom-0 w-1 bg-accent"></div>
+              }
+
+              <div class="flex justify-between items-start gap-4">
+                <span class="font-semibold text-xs leading-snug tracking-tight text-foreground/75 line-through transition-colors group-hover:text-primary">
+                  {{ task.title }}
+                </span>
                 
-                @if (task.priority === 'High') {
-                  <div class="absolute left-0 top-0 bottom-0 w-1 bg-accent"></div>
-                }
+                <div class="relative shrink-0 select-none">
+                  <button 
+                    (click)="toggleCardMenu(task.id, $event)" 
+                    class="text-foreground/35 hover:text-foreground cursor-pointer focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                    </svg>
+                  </button>
 
-                <div class="flex justify-between items-start gap-4">
-                  <h3 class="font-semibold text-sm leading-tight text-foreground/75 tracking-tight transition-colors line-through group-hover:text-primary">
-                    {{ task.title }}
-                  </h3>
-                  
-                  <div class="opacity-0 group-hover:opacity-100 flex items-center gap-1.5 transition-opacity duration-150 shrink-0">
-                    <button (click)="openEditModal(task)" class="text-foreground/45 hover:text-primary p-1 rounded hover:bg-background/80 cursor-pointer">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-                      </svg>
-                    </button>
-                    <button (click)="deleteTask(task.id)" class="text-foreground/45 hover:text-accent p-1 rounded hover:bg-background/80 cursor-pointer">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9 9m9.768-1.562-1.077 19.006A2.25 2.25 0 0 1 15.75 21H8.25a2.25 2.25 0 0 1-2.244-2.077L4.772 7.438m13.084 0A2.25 2.25 0 0 0 15.3 4.5H8.7a2.25 2.25 0 0 0-2.247 2.118L4.75 7.438M9 3.5h6" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-
-                @if (task.description) {
-                  <p class="text-xs text-foreground/50 font-light mt-2 line-clamp-3 leading-relaxed">
-                    {{ task.description }}
-                  </p>
-                }
-
-                <div class="flex flex-wrap items-center justify-between gap-2 mt-4 pt-3 border-t border-border/40 text-[10px] text-foreground/40">
-                  <div class="flex items-center gap-1.5">
-                    <span class="font-mono bg-card px-2 py-0.5 rounded border border-border/80 text-[9px] uppercase tracking-wider text-primary">
-                      [{{ task.category || 'General' }}]
-                    </span>
-                    @if (task.priority === 'High') {
-                      <span class="text-accent font-mono font-bold tracking-widest uppercase">ALTA</span>
-                    } @else if (task.priority === 'Low') {
-                      <span class="text-foreground/25 font-mono uppercase">BAJA</span>
-                    }
-                  </div>
-
-                  @if (task.dueDate) {
-                    <span class="flex items-center gap-1 font-light text-foreground/35">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3 text-slate-400">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z" />
-                      </svg>
-                      {{ task.dueDate | date:'d MMM, HH:mm' }}
-                    </span>
+                  @if (activeCardMenuId() === task.id) {
+                    <div class="absolute right-0 top-6 bg-card border border-border rounded-lg shadow-xl w-24 py-1 z-50 animate-[fadeIn_0.1s_ease-out]">
+                      <button (click)="openEditModal(task)" class="w-full text-left px-3 py-1 hover:bg-background text-xs font-mono text-foreground cursor-pointer">Editar</button>
+                      <button (click)="deleteTask(task.id)" class="w-full text-left px-3 py-1 hover:bg-background text-xs font-mono text-rose-500 cursor-pointer">Eliminar</button>
+                    </div>
                   }
                 </div>
               </div>
-            } @empty {
-              <div class="flex-grow flex flex-col items-center justify-center text-center p-8 border border-dashed border-border/50 rounded-xl text-foreground/35 text-[11px] font-mono select-none">
-                Sin tareas.
+
+              @if (task.description) {
+                <p class="text-[11px] text-foreground/45 font-normal leading-relaxed line-clamp-3">
+                  {{ task.description }}
+                </p>
+              }
+
+              <div class="flex items-center justify-between gap-2 pt-1.5">
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="bg-primary text-white text-[9px] font-medium px-2 py-0.5 rounded-full select-none tracking-tight">
+                    {{ task.category || 'General' }}
+                  </span>
+                  @if (task.priority === 'High') {
+                    <span class="bg-accent text-white text-[9px] font-medium px-2 py-0.5 rounded-full select-none tracking-tight">
+                      High Priority
+                    </span>
+                  }
+                  <span class="bg-neutral-100 dark:bg-neutral-800 text-foreground/50 text-[9px] px-2 py-0.5 rounded-full select-none font-mono tracking-tight">
+                    Sprint 8
+                  </span>
+                </div>
               </div>
-            }
-          </div>
+
+              <div class="flex items-center justify-between border-t border-border/50 pt-2.5 mt-0.5">
+                <div class="flex items-center -space-x-1.5 select-none">
+                  <div class="w-4.5 h-4.5 rounded-full bg-primary text-white text-[7px] flex items-center justify-center font-bold border border-card shadow-sm">
+                    JM
+                  </div>
+                  <div class="w-4.5 h-4.5 rounded-full bg-accent text-white text-[7px] flex items-center justify-center font-bold border border-card shadow-sm">
+                    JM
+                  </div>
+                </div>
+
+                @if (task.dueDate) {
+                  <span class="flex items-center gap-1 font-light text-[10px] text-foreground/35">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3.5 h-3.5 text-foreground/30">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                    </svg>
+                    {{ task.dueDate | date:'d MMM' }}
+                  </span>
+                }
+              </div>
+
+            </div>
+          } @empty {
+            <div class="flex-grow flex flex-col items-center justify-center text-center p-8 border border-dashed border-border/60 rounded-xl text-foreground/25 text-[10px] font-mono select-none">
+              No tasks
+            </div>
+          }
         </div>
-
       </div>
-    </div>
-  </div>
 
-  <!-- Footer -->
-  <footer class="border-t border-border/80 py-6 bg-card/10 select-none mt-auto">
-    <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between text-[11px] text-foreground/45 font-mono gap-3">
-      <span>SMART TASK MANAGER - .NET 10 & ANGULAR 22</span>
-      <span>ESTÉTICA EDITORIAL MINIMALISTA © 2026</span>
     </div>
-  </footer>
+  </main>
 
   <!-- Task Manual Creation & Edit Overlay Modal -->
   @if (showModal()) {
@@ -465,7 +537,7 @@
               [ngModel]="modalTitle()" 
               (ngModelChange)="modalTitle.set($event)"
               placeholder="Escribe el título..."
-              class="w-full px-3 py-2 border rounded-lg bg-card text-foreground placeholder-foreground/35 focus:outline-none focus:ring-1 focus:ring-primary text-sm"
+              class="w-full px-3 py-2 border rounded-lg bg-card text-foreground placeholder-foreground/35 focus:outline-none focus:ring-1 focus:ring-primary text-sm animate-none"
               [class.border-rose-500]="formErrors()['Title']"
             />
             @if (formErrors()['Title']) {
